@@ -331,6 +331,54 @@ p { margin: 0; }
 .voice-check { margin: 10px 0; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--marigold-soft); font-size: 14.5px; color: var(--ink); }
 .voice-check.ok { background: var(--pine-soft); }
 
+/* ---------- v2.0 ---------- */
+.tabs-in.four { grid-template-columns: repeat(4, 1fr); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips::-webkit-scrollbar { display: none; }
+.chip-btn { flex: none; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 8px 14px; font-weight: 650; font-size: 14px; min-height: 40px; white-space: nowrap; }
+.chip-btn[aria-pressed="true"] { background: var(--pine); border-color: var(--pine); color: var(--on-pine); }
+.form-sec { margin-top: 14px; }
+.form-sec h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.lvl { display: inline-block; font-size: 11.5px; font-weight: 800; padding: 2px 8px; border-radius: 999px; margin-right: 4px; vertical-align: 1px; }
+.lvl1 { background: var(--pine-soft); color: var(--pine); }
+.lvl2 { background: var(--marigold-soft); color: var(--ink); }
+.lvl3 { background: var(--iris-soft); color: var(--iris); }
+.tagline { margin-top: 6px; font-size: 14px; color: var(--muted); }
+.plan-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 10px; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 14px; margin-bottom: 14px; }
+.plan-bar small { display: block; color: var(--muted); font-size: 12px; font-weight: 600; }
+.plan-bar b { font-size: 15px; }
+.plan-bar-act { display: flex; align-items: center; gap: 2px; color: var(--pine); font-weight: 700; font-size: 14px; flex: none; }
+.plan-bar-act svg { width: 16px; height: 16px; }
+.plan-row { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: 6px 6px 6px 0; margin-top: 10px; }
+.plan-row.active { border: 2px solid var(--pine); }
+.plan-row-main { flex: 1; text-align: left; background: none; border: 0; padding: 8px 14px; }
+.plan-row-main b { display: block; }
+.plan-row-main span { font-size: 13.5px; color: var(--muted); }
+.week-prev { margin: 8px 0 0; padding-left: 22px; }
+.week-prev li { margin: 4px 0; }
+.week-prev span { color: var(--muted); font-size: 13.5px; }
+.wk-list { display: grid; gap: 10px; margin-top: 18px; }
+.wk-card { text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: var(--radius-lg); padding: 14px; display: grid; gap: 4px; }
+.wk-card b { font-family: var(--font-display); font-size: 18px; }
+.wk-card > span { font-size: 14px; color: var(--muted); }
+.wk-card.custom { background: var(--pine); border-color: var(--pine); color: var(--on-pine); }
+.wk-card.custom > span { color: var(--on-pine); opacity: .85; }
+.wk-top { display: flex; justify-content: space-between; align-items: center; }
+.wk-min { font-weight: 700; font-size: 13.5px; color: var(--muted); }
+.hist { list-style: none; padding: 0; margin: 12px 0 0; }
+.hist li { padding: 8px 0; border-top: 1px solid var(--line); }
+.hist b { display: block; font-size: 14.5px; }
+.hist span { font-size: 13px; color: var(--muted); }
+
+/* ---------- v2.1 ---------- */
+.form-sec h3 small { font-weight: 500; color: var(--muted); font-size: 13px; }
+.form-err { color: var(--danger); font-weight: 600; font-size: 14.5px; margin-top: 12px; }
+.result-card h2 { font-size: 24px; margin: 6px 0; }
+.level-notice { background: var(--pine-soft); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 14px; display: grid; gap: 4px; }
+.level-notice span { font-size: 14px; }
+.cal-tile.rest { background: var(--surface-2); border-style: dashed; }
+.yt-link { display: inline-block; margin-top: 16px; font-weight: 700; color: var(--pine); }
+
 </style>
 </head>
 <body>
@@ -866,6 +914,8 @@ var FIG = (function () {
           '<path d="M' + (pr.backRight ? x + w : x) + ',' + sy + 'V' + (sy - 46) + '"/>' +
           '<path d="M' + (x + 3) + ',' + sy + 'V' + FLOOR + 'M' + (x + w - 3) + ',' + sy + 'V' + FLOOR + '"/></g>' +
           '<rect x="' + x + '" y="' + (sy - 4) + '" width="' + w + '" height="6" rx="2" fill="' + C.prop + '" stroke="' + col + '" stroke-width="1.5"/>';
+      } else if (pr.type === 'bandHands') { // v2: band stretched between the two hands
+        s += '<path d="M' + P(J.wF) + 'L' + P(J.wN) + '" stroke="' + C.band + '" stroke-width="3" fill="none" stroke-linecap="round"/>';
       } else if (pr.type === 'band') {
         ['N', 'F'].forEach(function (side) {
           if (pr.hands && pr.hands.indexOf(side) < 0) return;
@@ -1797,6 +1847,927 @@ Object.keys(COACH).forEach(function (id) {
 });
 if (typeof module !== 'undefined') module.exports = EX;
 
+// ======================================================================
+// v2.0 exercise library additions. Loaded after exercises.js; never modifies existing exercises,
+// only adds new ones and a `tags` field (type, body parts, level, impact, equipment) to all.
+//   tags.type   : warmup | strength | cardio | hiit | core | mobility | stretch
+//   tags.parts  : arms | chest | back | shoulders | core | legs | glutes | full
+//   tags.level  : 1 beginner, 2 intermediate, 3 expert (lowest level the move suits)
+//   tags.impact : low | high (high = jumping or running)
+//   tags.equip  : none | band | chair | wall | mat | dumbbells
+//   unilateral  : true when plans should prescribe reps or time per side
+// ======================================================================
+(function () {
+  var RAD = Math.PI / 180;
+  function ang(dx, dy) { return Math.atan2(dx, dy) / RAD; }
+  function mix(a, b) { var o = {}; for (var k in a) o[k] = a[k]; for (var k2 in b) o[k2] = b[k2]; return o; }
+  // Straight body from ankle A to shoulder S (side view, facing right). Shoulder lands exactly on S.
+  function bodyLine(A, S, extra) {
+    var dx = S[0] - A[0], dy = S[1] - A[1], d = Math.hypot(dx, dy), ux = dx / d, uy = dy / d, t = ang(ux, uy);
+    return mix({ hx: S[0] - ux * 49, hy: S[1] - uy * 49, t: t, hd: t, lN: { ik: [A[0], A[1]], b: 1 }, lF: { ik: [A[0] - 3, A[1]], b: 1 }, fN: 15, fF: 15 }, extra || {});
+  }
+  // Kneeling straight line from knee K toward shoulder direction S; shins lie on the floor behind.
+  function kneeLine(K, S, extra) {
+    var dx = S[0] - K[0], dy = S[1] - K[1], d = Math.hypot(dx, dy), ux = dx / d, uy = dy / d, t = ang(ux, uy);
+    var thigh = ang(-ux, -uy);
+    return mix({ hx: K[0] + ux * 42, hy: K[1] + uy * 42, t: t, hd: t, lN: [thigh, -90], lF: [thigh + 1, -89], fN: -90, fF: -90 }, extra || {});
+  }
+  function shoulderOf(p) { // shoulder point for a side-view pose made by the helpers above
+    var u = [Math.sin(p.t * RAD), Math.cos(p.t * RAD)];
+    return [p.hx + u[0] * 49, p.hy + u[1] * 49];
+  }
+  function handsDown(p, dx, b) { var s = shoulderOf(p); return { aN: { ik: [s[0] + (dx || 0), 182], b: b || -1 }, aF: { ik: [s[0] + (dx || 0) - 2, 182], b: b || -1 } }; }
+  var MAT = [{ type: 'mat' }];
+  var SVG_ONLY2 = { svg: true, video: null, gif: null, poster: null, validated: false, status: 'SVG animation only; not reviewed by a qualified trainer' };
+
+  // ---------- poses ----------
+  var fp = bodyLine([40, 174], [170, 153]);                 // forearm plank
+  var fpA = mix(fp, { aN: [0, 90], aF: [1, 90] });
+  var fpB = mix(fpA, { hy: fp.hy - 1.5 });
+  var hp = bodyLine([50, 174], [176, 126]);                 // high plank (hands under shoulders)
+  var hpA = mix(hp, handsDown(hp, 0));
+  var hpLow = bodyLine([50, 174], [182, 158]);              // bottom of a push-up
+  var hpLowA = mix(hpLow, { aN: { ik: [176, 182], b: -1 }, aF: { ik: [174, 182], b: -1 } });
+  var ip = bodyLine([62, 180], [150, 78], { fN: 40, fF: 40 }); // incline plank on chair
+  var ipA = mix(ip, { aN: { ik: [154, 128], b: -1 }, aF: { ik: [152, 129], b: -1 } });
+  var ipLow = bodyLine([62, 180], [168, 100], { fN: 40, fF: 40 });
+  var ipLowA = mix(ipLow, { aN: { ik: [154, 128], b: -1 }, aF: { ik: [152, 129], b: -1 } });
+  var kp = kneeLine([110, 180], [185, 128]);                // knee plank / knee push-up
+  var kpA = mix(kp, handsDown(kp, 0));
+  var kpLow = kneeLine([110, 180], [190, 160]);
+  var kpS = shoulderOf(kp);
+  var kpLowA = mix(kpLow, { aN: { ik: [kpS[0], 182], b: -1 }, aF: { ik: [kpS[0] - 2, 182], b: -1 } });
+  var LIE = { hx: 122, hy: 175, t: -90, hd: -90 };          // lying on back, head to the left
+  var bridgeKnees = { lN: { ik: [158, 182], b: 1 }, lF: { ik: [154, 182], b: 1 }, fN: 90, fF: 90 };
+  var BRIDGE_UP = { hx: 115, hy: 149, t: -60, hd: -90, aN: [90, 90], aF: [90, 90] };
+  var QUAD = { hx: 100, hy: 138, t: 104, hd: 100, aN: { ik: [151, 182], b: -1 }, aF: { ik: [149, 182], b: -1 }, lN: [0, -90], lF: [2, -88], fN: -90, fF: -90 };
+  var PRONE = { hx: 110, hy: 177, t: 90, hd: 96, aN: [92, 92], aF: [92, 92], lN: [-90, -90], lF: [-89, -89], fN: -90, fF: -90 };
+
+  var NEW = {
+    // ===== CORE & PLANKS =====
+    incline_plank: {
+      name: 'Incline plank (hands on chair)', cat: 'Core', view: 'side', equip: 'Chair', props: [{ type: 'chair', x: 140, seat: 134, w: 38, backRight: true }],
+      frames: [mix(ipA, { hold: 1.2, move: 1.5 }), mix(ipA, { hy: ipA.hy - 1.5, hold: 1.2, move: 1.5 })], fin: 1,
+      muscles: 'Deep core, shoulders, glutes', start: 'Place your hands on the seat of a sturdy chair pushed against a wall. Walk your feet back until your body is one straight line from head to heels.',
+      steps: ['Press the chair away so your shoulders don\u2019t sink.', 'Squeeze your glutes and draw your belly button in.', 'Keep your neck long, eyes on the chair.', 'Hold while breathing steadily.'],
+      breath: 'Breathe slowly and steadily; never hold your breath.', rx: '2–3 holds of 15–30 seconds', rest: '30 seconds',
+      mistakes: ['Hips sagging toward the floor', 'Bottom pushed up high', 'Holding the breath'], mod: 'Use a wall instead of a chair for an easier angle.',
+      safety: 'Chair against a wall so it can\u2019t slide. Stop if your lower back aches.',
+      cues: ['Straight line head to heels', 'Squeeze your glutes', 'Push the chair away', 'Keep breathing'],
+      voiceSetup: 'Hands on the seat of a chair that\u2019s pushed against a wall. Walk your feet back until your body forms one straight line from head to heels. Squeeze your glutes, draw your belly in, and keep breathing.',
+      voiceStart: 'Straight line, glutes tight.', voiceBreathing: 'Breathe slowly. Don\u2019t hold your breath.', voiceFormCues: ['Hips in line.', 'Push the chair away.', 'Keep breathing.'],
+      voiceTen: 'Ten seconds left. Hold that straight line.', voiceFinish: 'Well held.', repMode: 'timed', cameraView: 'side',
+      safetyShort: 'Chair against a wall. Stop if your lower back aches.', checkpoints: ['Head, hips and heels in line', 'Shoulders over hands', 'Glutes squeezed'],
+      demoAudit: { replace: 'No', note: 'Body line and hand placement on the seat are clear.' },
+      tags: { type: ['core'], parts: ['core', 'shoulders'], level: 1, impact: 'low', equip: 'chair' }
+    },
+    knee_plank: {
+      name: 'Knee plank', cat: 'Core', view: 'side', equip: 'Mat', props: MAT,
+      frames: [mix(kpA, { hold: 1.2, move: 1.5 }), mix(kpA, { hy: kpA.hy - 1.5, hold: 1.2, move: 1.5 })], fin: 1,
+      muscles: 'Deep core, shoulders, chest', start: 'Kneel on a mat, hands under your shoulders, then walk your knees back until your body is straight from head to knees.',
+      steps: ['Hands under shoulders, fingers spread.', 'Tuck your hips slightly and squeeze your glutes.', 'Keep a straight line from head to knees.', 'Hold and breathe.'],
+      breath: 'Steady breathing throughout.', rx: '2–3 holds of 20–30 seconds', rest: '30 seconds',
+      mistakes: ['Bending at the hips', 'Shoulders drifting behind the hands', 'Looking up'], mod: 'Shorten the hold, or place a cushion under your knees.',
+      safety: 'Pad your knees. Stop if your wrists hurt; try the forearm version instead.',
+      cues: ['Straight line head to knees', 'Hands under shoulders', 'Squeeze your glutes'],
+      voiceSetup: 'Kneel on your mat with your hands under your shoulders. Walk your knees back so your body is straight from head to knees. Squeeze your glutes, tighten your tummy, and keep breathing.',
+      voiceStart: 'Straight line, head to knees.', voiceBreathing: 'Steady breaths.', voiceFormCues: ['Hips in line.', 'Shoulders over hands.', 'Keep breathing.'],
+      voiceTen: 'Ten seconds left. Stay strong.', voiceFinish: 'Good hold.', repMode: 'timed', cameraView: 'side',
+      safetyShort: 'Pad your knees; stop if your wrists hurt.', checkpoints: ['Hands under shoulders', 'Hips in line with shoulders and knees', 'Neck neutral'],
+      demoAudit: { replace: 'No', note: 'Kneeling line and shin position are clear.' },
+      tags: { type: ['core'], parts: ['core', 'shoulders', 'chest'], level: 1, impact: 'low', equip: 'mat' }
+    },
+    forearm_plank: {
+      name: 'Forearm plank', cat: 'Core', view: 'side', equip: 'Mat', props: MAT,
+      frames: [mix(fpA, { hold: 1.2, move: 1.5 }), mix(fpB, { hold: 1.2, move: 1.5 })], fin: 1,
+      muscles: 'Deep core (transverse abdominis), obliques, shoulders, glutes', start: 'Lie face down, elbows under your shoulders and forearms forward. Tuck your toes and lift your body into a straight line.',
+      steps: ['Elbows directly under shoulders.', 'Lift hips so your body is straight from head to heels.', 'Squeeze glutes and thighs; draw your belly in.', 'Hold while breathing steadily.'],
+      breath: 'Slow, steady breathing; don\u2019t hold your breath.', rx: '2–3 holds of 20–45 seconds', rest: '30–45 seconds',
+      mistakes: ['Sagging hips', 'Hips piked too high', 'Shoulders shrugged to ears', 'Holding the breath'], mod: 'Drop to your knees (knee plank) or use a chair (incline plank).',
+      safety: 'Stop if you feel lower-back pain. Quality matters more than time.',
+      cues: ['Straight line head to heels', 'Elbows under shoulders', 'Squeeze glutes and thighs', 'Keep breathing'],
+      voiceSetup: 'Lie face down with your elbows under your shoulders. Tuck your toes and lift your body into one straight line from head to heels. Squeeze your glutes, draw your belly in, and keep breathing.',
+      voiceStart: 'Elbows under shoulders, body straight.', voiceBreathing: 'Slow breaths in and out.', voiceFormCues: ['Hips level with shoulders.', 'Squeeze your glutes.', 'Push the floor away.'],
+      voiceTen: 'Ten seconds left. Hold it steady.', voiceFinish: 'Great plank.', repMode: 'timed', cameraView: 'side',
+      safetyShort: 'Drop to your knees if your back sags or aches.', checkpoints: ['Elbows under shoulders', 'Head, hips and heels in line', 'Glutes engaged', 'Neck neutral'],
+      demoAudit: { replace: 'No', note: 'Forearms on the floor and body line are clear.' },
+      tags: { type: ['core'], parts: ['core', 'shoulders', 'glutes'], level: 2, impact: 'low', equip: 'mat' }
+    },
+    side_plank: {
+      name: 'Side plank', cat: 'Core', view: 'front', equip: 'Mat', props: MAT, sides: true,
+      frames: [
+        { hx: 134, hy: 152, t: 108, hd: 108, aN: [0, 90], aF: [180, 180], lN: { ik: [57, 180], b: 1 }, lF: { ik: [55, 172], b: 1 }, fN: 90, fF: 90, hold: 1.4, move: 1.5 },
+        { hx: 134, hy: 150, t: 107, hd: 107, aN: [0, 90], aF: [178, 178], lN: { ik: [57, 180], b: 1 }, lF: { ik: [55, 172], b: 1 }, fN: 90, fF: 90, hold: 1.4, move: 1.5 }
+      ], fin: 1,
+      muscles: 'Obliques, deep core, glutes, shoulders', start: 'Lie on your side with your elbow under your shoulder and legs stacked. Lift your hips so your body forms a straight line.',
+      steps: ['Elbow directly under shoulder.', 'Stack your feet, or stagger them for balance.', 'Lift your hips off the mat.', 'Hold, then switch sides.'],
+      breath: 'Breathe steadily throughout.', rx: '2 holds of 15–30 seconds per side', rest: '30 seconds',
+      mistakes: ['Hips dropping', 'Rolling forward or back', 'Shoulder shrugging'], mod: 'Bend your knees and keep them on the mat (knee side plank).',
+      safety: 'Stop if your shoulder hurts. Use the knee version until the full version feels steady.',
+      cues: ['Hips high', 'Elbow under shoulder', 'Long body', 'Keep breathing'],
+      voiceSetup: 'Lie on your side with your elbow under your shoulder and legs stacked. Lift your hips so your body is one straight line. For an easier version, keep your knees bent on the mat. We\u2019ll switch sides halfway.',
+      voiceStart: 'Elbow under shoulder, hips up.', voiceBreathing: 'Breathe steadily.', voiceFormCues: ['Hips high.', 'Don\u2019t roll forward.', 'Shoulder away from your ear.'],
+      voiceTen: 'Ten seconds left. Hips up.', voiceFinish: 'Well done.', repMode: 'timed', cameraView: 'front',
+      sideInstructions: { first: 'Right side first.', second: 'Now lie on your left side.' },
+      safetyShort: 'Stop if your shoulder hurts; use the knee version first.', checkpoints: ['Elbow under shoulder', 'Body in one line', 'Hips lifted, not rolled'],
+      demoAudit: { replace: 'Recommended', note: 'Drawn as a rotated front view; a real side-plank video would show the stacked hips more clearly. Knee version is not animated.' },
+      tags: { type: ['core'], parts: ['core', 'glutes', 'shoulders'], level: 3, impact: 'low', equip: 'mat' }, unilateral: true
+    },
+    plank_shoulder_taps: {
+      name: 'Plank shoulder taps', cat: 'Core', view: 'side', equip: 'Mat', props: MAT,
+      frames: [mix(hpA, { hold: 0.3, move: 0.8 }), mix(hpA, { aN: [30, -150], hold: 0.4, move: 0.8 }), mix(hpA, { hold: 0.3, move: 0.8 }), mix(hpA, { aF: [30, -150], hold: 0.4, move: 0.8 })], fin: 1,
+      muscles: 'Deep core, obliques, shoulders, chest', start: 'Start in a high plank: hands under shoulders, feet wider than hips, body straight.',
+      steps: ['Shift your weight slightly onto one hand.', 'Lift the other hand and tap the opposite shoulder.', 'Place it back down with control.', 'Alternate sides while keeping your hips still.'],
+      breath: 'Breathe steadily; exhale on each tap.', rx: '2–3 sets of 10–16 taps (total)', rest: '30–45 seconds',
+      mistakes: ['Hips rocking side to side', 'Feet too close together', 'Rushing'], mod: 'Do it from your knees, or with hands on a chair seat.',
+      safety: 'Widen your feet for balance. Stop if your wrists hurt.',
+      cues: ['Hips still', 'Slow taps', 'Feet wide', 'Body straight'],
+      voiceSetup: 'Start in a high plank with hands under your shoulders and feet wider than your hips. Lift one hand to tap the opposite shoulder, then put it back down. Alternate sides, keeping your hips as still as you can.',
+      voiceStart: 'High plank, feet wide.', voiceBreathing: 'Exhale on each tap.', voiceFormCues: ['Hips still.', 'Slow and controlled.', 'Body straight.'],
+      voiceLastTwo: 'Keep your hips still.',
+      tempo: { phases: [{ label: 'Tap', secs: 1, to: 'finish', breath: 'Exhale', dir: 'up' }, { label: 'Hand down', secs: 1, to: 'start', breath: 'Inhale', dir: 'down' }] },
+      repMode: 'guided', cameraView: 'side',
+      safetyShort: 'Widen your feet; drop to your knees if your hips rock.', checkpoints: ['Hands under shoulders', 'Hips square to the floor', 'Feet wide'],
+      demoAudit: { replace: 'Optional', note: 'Side view cannot show the hip rotation to avoid; tap is shown on both arms.' },
+      tags: { type: ['core'], parts: ['core', 'shoulders', 'chest'], level: 2, impact: 'low', equip: 'mat' }
+    },
+    mountain_climbers: {
+      name: 'Mountain climbers', cat: 'Cardio', view: 'side', equip: 'Mat', props: MAT,
+      frames: [
+        mix(hpA, { lN: [70, -55], fN: 30, hold: 0.05, move: 0.35 }), mix(hpA, { hold: 0, move: 0.35 }),
+        mix(hpA, { lF: [70, -55], fF: 30, hold: 0.05, move: 0.35 }), mix(hpA, { hold: 0, move: 0.35 })
+      ], fin: 2, startPoseFrame: 1,
+      muscles: 'Core, hip flexors, shoulders, heart and lungs', start: 'Start in a high plank: hands under shoulders, body straight.',
+      steps: ['Drive one knee toward your chest.', 'Return it and drive the other knee in.', 'Keep your hips low and shoulders over your hands.', 'Go slowly at first; speed up only if form stays solid.'],
+      breath: 'Breathe rhythmically with the leg drives.', rx: '20–40 seconds', rest: '20–40 seconds',
+      mistakes: ['Hips bouncing high', 'Shoulders drifting behind the hands', 'Holding the breath'], mod: 'Step each knee in slowly, or do it with hands on a chair seat.',
+      safety: 'High intensity. Slow down or stop if you feel dizzy or your wrists hurt.',
+      cues: ['Hips low', 'Shoulders over hands', 'Drive the knees', 'Keep breathing'],
+      voiceSetup: 'Start in a high plank with your hands under your shoulders. Drive one knee toward your chest, then switch legs. Keep your hips low. Go at a pace where your form stays solid.',
+      voiceStart: 'High plank, hips low.', voiceBreathing: 'Breathe in rhythm.', voiceFormCues: ['Hips low.', 'Shoulders over hands.', 'Stay in control.'],
+      voiceTen: 'Ten seconds left. Keep it controlled.', voiceFinish: 'Great effort. Catch your breath.', repMode: 'timed', cameraView: 'side',
+      safetyShort: 'High intensity: slow down if dizzy; stop if wrists hurt.', checkpoints: ['Hands under shoulders', 'Hips no higher than shoulders', 'Knee drives under the chest'],
+      demoAudit: { replace: 'Optional', note: 'Knee drive is clear; speed is fixed in the animation.' },
+      tags: { type: ['hiit', 'cardio', 'core'], parts: ['core', 'full'], level: 3, impact: 'high', equip: 'mat' }
+    },
+    dead_bug: {
+      name: 'Dead bug', cat: 'Core', view: 'side', equip: 'Mat', props: MAT,
+      frames: [
+        mix(LIE, { aN: [180, 180], aF: [180, 180], lN: [180, 90], lF: [180, 90], fN: 90, fF: 90, hold: 0.3, move: 1.4 }),
+        mix(LIE, { aN: [-110, -110], aF: [180, 180], lN: [180, 90], lF: [100, 100], fN: 90, fF: 90, hold: 0.8, move: 1.4 }),
+        mix(LIE, { aN: [180, 180], aF: [180, 180], lN: [180, 90], lF: [180, 90], fN: 90, fF: 90, hold: 0.3, move: 1.4 }),
+        mix(LIE, { aN: [180, 180], aF: [-110, -110], lN: [100, 100], lF: [180, 90], fN: 90, fF: 90, hold: 0.8, move: 1.4 })
+      ], fin: 1, tempo: { finish2: 3, phases: [{ label: 'Extend', secs: 2, to: 'finish', breath: 'Exhale', dir: 'out' }, { label: 'Pause', secs: 0.5, to: null, breath: 'Hold' }, { label: 'Return', secs: 1.5, to: 'start', breath: 'Inhale', dir: 'in' }] },
+      muscles: 'Deep core, lower abs, hip flexors', start: 'Lie on your back, arms pointing to the ceiling, knees bent at 90° above your hips.',
+      steps: ['Press your lower back gently into the mat.', 'Lower one arm overhead and the opposite leg toward the floor.', 'Go only as far as your back stays down.', 'Return and switch sides.'],
+      breath: 'Exhale as you extend, inhale as you return.', rx: '2–3 sets of 6–10 per side', rest: '30–45 seconds',
+      mistakes: ['Lower back arching off the mat', 'Moving too fast', 'Holding the breath'], mod: 'Move only the legs, or only the arms.',
+      safety: 'Keep your lower back on the mat; reduce the range if it lifts.',
+      cues: ['Back flat on the mat', 'Slow and controlled', 'Opposite arm and leg'],
+      voiceSetup: 'Lie on your back with your arms pointing to the ceiling and your knees bent above your hips. Press your lower back into the mat. Slowly lower one arm and the opposite leg, then return and switch.',
+      voiceStart: 'Back flat, knees above hips.', voiceBreathing: 'Exhale as you extend.', voiceFormCues: ['Lower back down.', 'Slow and controlled.', 'Opposite arm and leg.'],
+      voiceLastTwo: 'Keep your back flat.', repMode: 'guided', cameraView: 'side',
+      sideInstructions: { first: 'Right arm and left leg first.', second: 'Now left arm and right leg.' },
+      safetyShort: 'Keep your lower back on the mat.', checkpoints: ['Lower back stays in contact with the mat', 'Knees over hips in the start', 'Opposite limbs move together'],
+      demoAudit: { replace: 'No', note: 'Both sides animated; side view shows limb height.' },
+      tags: { type: ['core'], parts: ['core'], level: 1, impact: 'low', equip: 'mat' }, unilateral: true
+    },
+    crunch: {
+      name: 'Crunch', cat: 'Core', view: 'side', equip: 'Mat', props: MAT,
+      frames: [mix(LIE, mix(bridgeKnees, { aN: [100, 100], aF: [100, 100], hold: 0.3, move: 1.3 })), { hx: 122, hy: 175, t: -122, hd: -110, aN: [112, 112], aF: [112, 112], lN: { ik: [158, 182], b: 1 }, lF: { ik: [154, 182], b: 1 }, fN: 90, fF: 90, hold: 0.6, move: 1.6 }], fin: 1,
+      tempo: { phases: [{ label: 'Curl up', secs: 1.5, to: 'finish', breath: 'Exhale', dir: 'up' }, { label: 'Squeeze', secs: 0.5, to: null, breath: 'Hold' }, { label: 'Lower', secs: 2, to: 'start', breath: 'Inhale', dir: 'down' }] },
+      muscles: 'Upper abs (rectus abdominis)', start: 'Lie on your back, knees bent, feet flat, arms reaching toward your knees.',
+      steps: ['Tuck your chin slightly.', 'Curl your head and shoulder blades off the mat.', 'Reach your hands toward your knees.', 'Lower slowly.'],
+      breath: 'Exhale as you curl up, inhale as you lower.', rx: '2–3 sets of 10–15 reps', rest: '30–45 seconds',
+      mistakes: ['Pulling on the neck', 'Using momentum', 'Lifting the lower back off the mat'], mod: 'Make the curl smaller.',
+      safety: 'Never pull on your head. Stop if your neck strains.',
+      cues: ['Shoulder blades off the mat', 'Chin slightly tucked', 'Slow lowering'],
+      voiceSetup: 'Lie on your back with knees bent and feet flat, arms reaching toward your knees. Breathe out and curl your head and shoulder blades off the mat, then lower slowly. Keep your lower back on the mat.',
+      voiceStart: 'Knees bent, arms forward.', voiceBreathing: 'Exhale as you curl up.', voiceFormCues: ['Small curl.', 'Don\u2019t pull your neck.', 'Lower slowly.'],
+      voiceLastTwo: 'Squeeze your tummy.', repMode: 'guided', cameraView: 'side',
+      safetyShort: 'Never pull on your neck.', checkpoints: ['Lower back stays down', 'Neck neutral, chin slightly tucked', 'Movement from the upper abs'],
+      demoAudit: { replace: 'Optional', note: 'Torso is one segment, so the curl is shown as a small lift of the whole upper body.' },
+      tags: { type: ['core'], parts: ['core'], level: 1, impact: 'low', equip: 'mat' }
+    },
+    superman: {
+      name: 'Superman', cat: 'Posture', view: 'side', equip: 'Mat', props: MAT,
+      frames: [mix(PRONE, { hold: 0.4, move: 1.4 }), mix(PRONE, { t: 97, hd: 100, aN: [104, 104], aF: [104, 104], lN: [-97, -97], lF: [-96, -96], hold: 1.5, move: 1.4 })], fin: 1,
+      tempo: { phases: [{ label: 'Lift', secs: 1.5, to: 'finish', breath: 'Exhale', dir: 'up' }, { label: 'Hold', secs: 2, to: null, breath: 'Hold' }, { label: 'Lower', secs: 1.5, to: 'start', breath: 'Inhale', dir: 'down' }] },
+      muscles: 'Lower back, glutes, upper back, rear shoulders', start: 'Lie face down, arms stretched overhead, legs long.',
+      steps: ['Squeeze your glutes.', 'Lift your arms, chest and legs a few centimetres.', 'Hold, keeping your neck long.', 'Lower slowly.'],
+      breath: 'Exhale as you lift, inhale as you lower.', rx: '2–3 sets of 8–12 reps', rest: '30–45 seconds',
+      mistakes: ['Cranking the neck up', 'Lifting too high', 'Rushing'], mod: 'Lift only the arms, or only the legs.',
+      safety: 'Keep the lift small. Stop if your lower back pinches.',
+      cues: ['Small lift', 'Neck long', 'Squeeze your glutes'],
+      voiceSetup: 'Lie face down with your arms stretched overhead and legs long. Squeeze your glutes and lift your arms, chest and legs just a few centimetres. Hold, keep your neck long, then lower slowly.',
+      voiceStart: 'Arms long, legs long.', voiceBreathing: 'Exhale as you lift.', voiceFormCues: ['Small lift.', 'Eyes on the mat.', 'Squeeze your glutes.'],
+      voiceLastTwo: 'Keep the lift small.', repMode: 'guided', cameraView: 'side',
+      safetyShort: 'Keep it small; stop if your lower back pinches.', checkpoints: ['Neck neutral', 'Small, controlled lift', 'Glutes engaged'],
+      demoAudit: { replace: 'Optional', note: 'Near arm crosses the face in side view, as in the prone Y raise.' },
+      tags: { type: ['strength', 'core'], parts: ['back', 'glutes', 'core'], level: 2, impact: 'low', equip: 'mat' }
+    },
+    glute_bridge_march: {
+      name: 'Glute bridge march', cat: 'Lower body', view: 'side', equip: 'Mat', props: MAT,
+      frames: [
+        mix(BRIDGE_UP, mix(bridgeKnees, { hold: 0.3, move: 1 })), mix(BRIDGE_UP, { lN: [150, 60], lF: { ik: [154, 182], b: 1 }, fN: 90, fF: 90, hold: 0.5, move: 1 }),
+        mix(BRIDGE_UP, mix(bridgeKnees, { hold: 0.3, move: 1 })), mix(BRIDGE_UP, { lF: [150, 60], lN: { ik: [158, 182], b: 1 }, fN: 90, fF: 90, hold: 0.5, move: 1 })
+      ], fin: 1,
+      tempo: { finish2: 3, phases: [{ label: 'Lift knee', secs: 1, to: 'finish', breath: 'Exhale', dir: 'up' }, { label: 'Hold', secs: 0.5, to: null, breath: 'Hold' }, { label: 'Lower', secs: 1, to: 'start', breath: 'Inhale', dir: 'down' }] },
+      muscles: 'Glutes, hamstrings, deep core', start: 'Lie on your back, knees bent, feet flat. Lift your hips into a bridge.',
+      steps: ['Hold the bridge with hips level.', 'Lift one foot a few centimetres, knee bent.', 'Place it down and lift the other.', 'Keep your hips from dropping or tilting.'],
+      breath: 'Breathe steadily; exhale as each foot lifts.', rx: '2–3 sets of 6–10 per side', rest: '30–45 seconds',
+      mistakes: ['Hips dropping', 'Hips tilting to one side', 'Arching the lower back'], mod: 'Do a regular glute bridge instead.',
+      safety: 'Stop if you feel cramping in the hamstrings; lower and rest.',
+      cues: ['Hips level', 'Squeeze your glutes', 'Small march'],
+      voiceSetup: 'Lie on your back with knees bent and lift your hips into a bridge. Keeping your hips level, lift one foot a little off the floor, put it down, then lift the other. Don\u2019t let your hips drop.',
+      voiceStart: 'Bridge up, hips level.', voiceBreathing: 'Exhale as each foot lifts.', voiceFormCues: ['Hips level.', 'Glutes tight.', 'Ribs down.'],
+      voiceLastTwo: 'Keep your hips up.', repMode: 'guided', cameraView: 'side',
+      sideInstructions: { first: 'Right foot first.', second: 'Now the left foot.' },
+      safetyShort: 'Lower and rest if your hamstrings cramp.', checkpoints: ['Hips stay level and lifted', 'No over-arching', 'Lift is small and controlled'],
+      demoAudit: { replace: 'No', note: 'Alternating leg lift from the bridge is clear.' },
+      tags: { type: ['strength', 'core'], parts: ['glutes', 'legs', 'core'], level: 2, impact: 'low', equip: 'mat' }, unilateral: true
+    },
+
+    // ===== UPPER BODY =====
+    incline_pushup: {
+      name: 'Incline push-up (chair)', cat: 'Upper body', view: 'side', equip: 'Chair', props: [{ type: 'chair', x: 140, seat: 134, w: 38, backRight: true }],
+      frames: [mix(ipA, { hold: 0.3, move: 1.6 }), mix(ipLowA, { hold: 0.4, move: 1.4 })], fin: 1,
+      tempo: { phases: [{ label: 'Lower', secs: 2, to: 'finish', breath: 'Inhale', dir: 'down' }, { label: 'Pause', secs: 0.5, to: null, breath: 'Hold' }, { label: 'Push', secs: 1.5, to: 'start', breath: 'Exhale', dir: 'up' }] },
+      muscles: 'Chest, front shoulders, triceps, core', start: 'Hands on the seat of a sturdy chair pushed against a wall, slightly wider than shoulders. Walk your feet back into a straight line.',
+      steps: ['Bend your elbows to lower your chest toward the seat.', 'Keep elbows about 45° from your body.', 'Keep your body straight.', 'Push back up.'],
+      breath: 'Inhale as you lower, exhale as you push.', rx: '2–3 sets of 8–12 reps', rest: '45 seconds',
+      mistakes: ['Hips sagging', 'Elbows flaring out', 'Partial range'], mod: 'Go back to wall push-ups.',
+      safety: 'Chair must be against a wall and not able to slide.',
+      cues: ['Body straight', 'Elbows angled back', 'Exhale while pushing'],
+      voiceSetup: 'Hands on the seat of a chair pushed against a wall, a little wider than your shoulders. Walk your feet back so your body is straight. Bend your elbows to bring your chest toward the seat, then push back up.',
+      voiceStart: 'Body straight, hands on the seat.', voiceBreathing: 'Inhale down, exhale as you push.', voiceFormCues: ['Body straight.', 'Elbows back, not out.', 'Full range.'],
+      voiceLastTwo: 'Keep your body straight.', repMode: 'guided', cameraView: 'side',
+      safetyShort: 'Chair against a wall so it can\u2019t slide.', checkpoints: ['Hands slightly wider than shoulders', 'Head, hips and heels in line', 'Elbows about 45° from the body'],
+      demoAudit: { replace: 'No', note: 'Hands stay on the seat; body line clear.' },
+      tags: { type: ['strength'], parts: ['chest', 'arms', 'shoulders'], level: 1, impact: 'low', equip: 'chair' }
+    },
+    knee_pushup: {
+      name: 'Knee push-up', cat: 'Upper body', view: 'side', equip: 'Mat', props: MAT,
+      frames: [mix(kpA, { hold: 0.3, move: 1.6 }), mix(kpLowA, { hold: 0.4, move: 1.4 })], fin: 1,
+      tempo: { phases: [{ label: 'Lower', secs: 2, to: 'finish', breath: 'Inhale', dir: 'down' }, { label: 'Pause', secs: 0.5, to: null, breath: 'Hold' }, { label: 'Push', secs: 1.5, to: 'start', breath: 'Exhale', dir: 'up' }] },
+      muscles: 'Chest, front shoulders, triceps, core', start: 'Kneel with hands slightly wider than shoulders; walk your knees back so your body is straight from head to knees.',
+      steps: ['Bend your elbows to lower your chest toward the floor.', 'Keep elbows about 45° from your body.', 'Keep a straight line from head to knees.', 'Push back up.'],
+      breath: 'Inhale as you lower, exhale as you push.', rx: '2–3 sets of 6–12 reps', rest: '45–60 seconds',
+      mistakes: ['Bending at the hips', 'Elbows flaring', 'Head dropping'], mod: 'Use the incline push-up on a chair.',
+      safety: 'Pad your knees. Stop if your wrists or shoulders hurt.',
+      cues: ['Straight line head to knees', 'Elbows angled back', 'Exhale while pushing'],
+      voiceSetup: 'Kneel with your hands a little wider than your shoulders and walk your knees back so your body is straight from head to knees. Bend your elbows to lower your chest, then push back up.',
+      voiceStart: 'Straight line, head to knees.', voiceBreathing: 'Inhale down, exhale up.', voiceFormCues: ['Hips in line.', 'Elbows back.', 'Chest to the floor.'],
+      voiceLastTwo: 'Stay straight.', repMode: 'guided', cameraView: 'side',
+      safetyShort: 'Pad your knees; stop if wrists hurt.', checkpoints: ['Hands slightly wider than shoulders', 'Straight line head to knees', 'Controlled lowering'],
+      demoAudit: { replace: 'No', note: 'Kneeling push-up range is clear.' },
+      tags: { type: ['strength'], parts: ['chest', 'arms', 'shoulders', 'core'], level: 2, impact: 'low', equip: 'mat' }
+    },
+    pushup: {
+      name: 'Push-up', cat: 'Upper body', view: 'side', equip: 'Mat', props: MAT,
+      frames: [mix(hpA, { hold: 0.3, move: 1.6 }), mix(hpLowA, { hold: 0.4, move: 1.4 })], fin: 1,
+      tempo: { phases: [{ label: 'Lower', secs: 2, to: 'finish', breath: 'Inhale', dir: 'down' }, { label: 'Pause', secs: 0.5, to: null, breath: 'Hold' }, { label: 'Push', secs: 1.5, to: 'start', breath: 'Exhale', dir: 'up' }] },
+      muscles: 'Chest, front shoulders, triceps, core', start: 'High plank: hands slightly wider than shoulders, body straight from head to heels.',
+      steps: ['Lower your chest toward the floor with elbows about 45° from your body.', 'Keep your body one straight line.', 'Go as low as you can with good form.', 'Push the floor away to return.'],
+      breath: 'Inhale as you lower, exhale as you push.', rx: '2–3 sets of 5–12 reps', rest: '60 seconds',
+      mistakes: ['Hips sagging or piking', 'Elbows flaring straight out', 'Half reps'], mod: 'Knee push-ups or incline push-ups.',
+      safety: 'Stop if your wrists or shoulders hurt. Quality over quantity.',
+      cues: ['Body straight', 'Elbows angled back', 'Push the floor away'],
+      voiceSetup: 'Start in a high plank with hands a little wider than your shoulders and your body straight from head to heels. Lower your chest toward the floor, elbows angled back, then push the floor away.',
+      voiceStart: 'High plank, body straight.', voiceBreathing: 'Inhale down, exhale up.', voiceFormCues: ['Hips in line.', 'Elbows back.', 'Push the floor away.'],
+      voiceLastTwo: 'Keep your form.', repMode: 'guided', cameraView: 'side',
+      safetyShort: 'Switch to knee push-ups when form breaks.', checkpoints: ['Head, hips and heels in line', 'Elbows about 45°', 'Chest close to the floor'],
+      demoAudit: { replace: 'No', note: 'Range and body line are clear.' },
+      tags: { type: ['strength'], parts: ['chest', 'arms', 'shoulders', 'core'], level: 3, impact: 'low', equip: 'mat' }
+    },
+    chair_dips: {
+      name: 'Chair triceps dips', cat: 'Upper body', view: 'side', equip: 'Chair', props: [{ type: 'chair', x: 74, seat: 134, w: 40 }],
+      frames: [
+        { hx: 116, hy: 126, t: 180, aN: { ik: [112, 128], b: -1 }, aF: { ik: [110, 129], b: -1 }, lN: { ik: [175, 182], b: 1 }, lF: { ik: [171, 182], b: 1 }, hold: 0.3, move: 1.6 },
+        { hx: 119, hy: 148, t: 180, aN: { ik: [112, 128], b: -1 }, aF: { ik: [110, 129], b: -1 }, lN: { ik: [175, 182], b: 1 }, lF: { ik: [171, 182], b: 1 }, hold: 0.3, move: 1.4 }
+      ], fin: 1,
+      tempo: { phases: [{ label: 'Lower', secs: 2, to: 'finish', breath: 'Inhale', dir: 'down' }, { label: 'Pause', secs: 0.5, to: null, breath: 'Hold' }, { label: 'Push up', secs: 1.5, to: 'start', breath: 'Exhale', dir: 'up' }] },
+      muscles: 'Triceps, chest, front shoulders', start: 'Sit on the edge of a sturdy chair against a wall, hands beside your hips gripping the edge. Slide your hips forward off the seat, knees bent.',
+      steps: ['Bend your elbows straight back to lower your hips.', 'Stop when your elbows reach about 90°, or earlier if your shoulders feel strained.', 'Keep your back close to the chair.', 'Press through your palms to straighten your arms.'],
+      breath: 'Inhale as you lower, exhale as you push up.', rx: '2–3 sets of 6–12 reps', rest: '45–60 seconds',
+      mistakes: ['Elbows flaring out', 'Going too deep', 'Shrugging the shoulders'], mod: 'Bring your feet closer and lower only a little.',
+      safety: 'Chair must be stable and against a wall. Skip this if you have shoulder pain.',
+      cues: ['Elbows point back', 'Back close to the chair', 'Shoulders down'],
+      voiceSetup: 'Sit on the edge of a sturdy chair against a wall, hands gripping the edge beside your hips. Slide your hips forward with knees bent. Bend your elbows straight back to lower a little, then press up. Keep your shoulders down.',
+      voiceStart: 'Hands on the edge, elbows back.', voiceBreathing: 'Inhale down, exhale up.', voiceFormCues: ['Elbows back.', 'Shoulders away from ears.', 'Stay close to the chair.'],
+      voiceLastTwo: 'Shoulders down.', repMode: 'guided', cameraView: 'side',
+      safetyShort: 'Stable chair against a wall; skip with shoulder pain.', checkpoints: ['Elbows point backward', 'Hips close to the chair', 'Depth no more than about 90° at the elbow'],
+      demoAudit: { replace: 'No', note: 'Elbow hinge and hip drop are clear.' },
+      tags: { type: ['strength'], parts: ['arms', 'chest', 'shoulders'], level: 2, impact: 'low', equip: 'chair' }
+    },
+    band_overhead_press: {
+      name: 'Band overhead press', cat: 'Upper body', view: 'side', equip: 'Resistance band', props: [{ type: 'band', from: [136, 185], fromF: [130, 185] }],
+      frames: [{ aN: [25, 175], aF: [22, 172], hold: 0.3, move: 1.5 }, { aN: [176, 178], aF: [174, 176], hold: 0.4, move: 1.8 }], fin: 1,
+      tempo: { phases: [{ label: 'Press', secs: 1.5, to: 'finish', breath: 'Exhale', dir: 'up' }, { label: 'Pause', secs: 0.5, to: null, breath: 'Hold' }, { label: 'Lower', secs: 2, to: 'start', breath: 'Inhale', dir: 'down' }] },
+      muscles: 'Shoulders, triceps, upper back', start: 'Stand on the middle of the band, feet hip-width. Hold the ends at shoulder height, palms forward.',
+      steps: ['Brace your core and squeeze your glutes.', 'Press your hands straight up overhead.', 'Keep your ribs down; don\u2019t arch your back.', 'Lower slowly to shoulder height.'],
+      breath: 'Exhale as you press, inhale as you lower.', rx: '2–3 sets of 8–12 reps', rest: '45 seconds',
+      mistakes: ['Arching the lower back', 'Shrugging', 'Letting the band snap down'], mod: 'Press one arm at a time, or use lighter tension.',
+      safety: 'Secure the band under your feet. Skip overhead work if it pinches your shoulder.',
+      cues: ['Ribs down', 'Press straight up', 'Slow on the way down'],
+      voiceSetup: 'Stand on the middle of the band with feet hip-width apart. Hold the ends at shoulder height, palms forward. Brace your core, press straight up overhead, then lower slowly. Keep your ribs down.',
+      voiceStart: 'Hands at shoulders, core braced.', voiceBreathing: 'Exhale as you press.', voiceFormCues: ['Ribs down.', 'No shrugging.', 'Control the lowering.'],
+      voiceLastTwo: 'Keep your ribs down.', repMode: 'guided', cameraView: 'side',
+      safetyShort: 'Band secure under both feet; skip if overhead pinches.', checkpoints: ['Lower back neutral', 'Wrists over elbows', 'Full lockout without shrugging'],
+      demoAudit: { replace: 'No', note: 'Press path is clear from the side.' },
+      tags: { type: ['strength'], parts: ['shoulders', 'arms'], level: 1, impact: 'low', equip: 'band' }
+    },
+    band_pull_apart: {
+      name: 'Band pull-apart', cat: 'Posture', view: 'front', equip: 'Resistance band', props: [{ type: 'bandHands' }],
+      frames: [{ aN: [62, -100], aF: [-62, 100], hold: 0.3, move: 1.4 }, { aN: [88, 90], aF: [-88, -90], hold: 0.6, move: 1.8 }], fin: 1,
+      tempo: { phases: [{ label: 'Pull apart', secs: 1.5, to: 'finish', breath: 'Exhale', dir: 'out' }, { label: 'Squeeze', secs: 1, to: null, breath: 'Hold' }, { label: 'Return', secs: 2, to: 'start', breath: 'Inhale', dir: 'in' }] },
+      muscles: 'Upper back, rear shoulders (posture muscles)', start: 'Stand tall holding the band in front of your chest with both hands, shoulder-width apart, arms nearly straight.',
+      steps: ['Pull the band apart by moving your hands out to the sides.', 'Squeeze your shoulder blades together.', 'Keep your arms at chest height.', 'Return slowly.'],
+      breath: 'Exhale as you pull, inhale as you return.', rx: '2–3 sets of 12–15 reps', rest: '30–45 seconds',
+      mistakes: ['Shrugging', 'Bending the elbows a lot', 'Arching the back'], mod: 'Hold the band with wider hands for less tension.',
+      safety: 'Check the band for tears. Use a tension you can control.',
+      cues: ['Squeeze your shoulder blades', 'Shoulders down', 'Slow return'],
+      voiceSetup: 'Stand tall and hold the band in front of your chest with both hands, arms almost straight. Pull the band apart until your hands reach out to the sides, squeezing your shoulder blades together, then return slowly.',
+      voiceStart: 'Band in front of your chest.', voiceBreathing: 'Exhale as you pull.', voiceFormCues: ['Shoulders down.', 'Squeeze your back.', 'Slow return.'],
+      voiceLastTwo: 'Squeeze your shoulder blades.', repMode: 'guided', cameraView: 'front',
+      safetyShort: 'Use a tension you can control; check the band first.', checkpoints: ['Arms at chest height', 'Shoulders down', 'Elbows nearly straight'],
+      demoAudit: { replace: 'Optional', note: 'In a front view the start position is approximate (arms coming toward the camera cannot be foreshortened).' },
+      tags: { type: ['strength'], parts: ['back', 'shoulders'], level: 1, impact: 'low', equip: 'band' }
+    },
+    db_floor_press: {
+      name: 'Dumbbell floor press', cat: 'Upper body', view: 'side', equip: '2 kg dumbbells (optional)', optional: true, alt: 'No dumbbells? Do incline push-ups instead.',
+      props: [{ type: 'mat' }, { type: 'dumbbells' }],
+      frames: [mix(LIE, mix(bridgeKnees, { aN: [100, 180], aF: [98, 178], hold: 0.3, move: 1.5 })), mix(LIE, mix(bridgeKnees, { aN: [180, 180], aF: [178, 178], hold: 0.4, move: 1.8 }))], fin: 1,
+      tempo: { phases: [{ label: 'Press', secs: 1.5, to: 'finish', breath: 'Exhale', dir: 'up' }, { label: 'Pause', secs: 0.5, to: null, breath: 'Hold' }, { label: 'Lower', secs: 2, to: 'start', breath: 'Inhale', dir: 'down' }] },
+      muscles: 'Chest, triceps, front shoulders', start: 'Lie on your back, knees bent, a dumbbell in each hand, upper arms on the floor at about 45° from your body, forearms vertical.',
+      steps: ['Press the dumbbells straight up over your chest.', 'Bring them close together at the top.', 'Lower slowly until your upper arms touch the floor.', 'Repeat.'],
+      breath: 'Exhale as you press, inhale as you lower.', rx: '2–3 sets of 10–12 reps', rest: '45 seconds',
+      mistakes: ['Dropping the arms onto the floor', 'Elbows flared at 90°', 'Arching the back'], mod: 'Use one dumbbell held with both hands.',
+      safety: 'Grip the dumbbells firmly and keep them over your chest, not your face.',
+      cues: ['Press over your chest', 'Slow lowering', 'Elbows at 45°'],
+      voiceSetup: 'Lie on your back with knees bent, a dumbbell in each hand, upper arms on the floor and forearms pointing up. Press the weights straight up over your chest, then lower slowly until your arms touch the floor.',
+      voiceStart: 'Upper arms on the floor.', voiceBreathing: 'Exhale as you press.', voiceFormCues: ['Over your chest.', 'Slow lowering.', 'Elbows at forty-five degrees.'],
+      voiceLastTwo: 'Control the weights.', repMode: 'guided', cameraView: 'side',
+      safetyShort: 'Keep the weights over your chest, never over your face.', checkpoints: ['Elbows about 45° from the body', 'Weights over the chest', 'Controlled lowering'],
+      demoAudit: { replace: 'Optional', note: 'Elbow angle out from the body cannot be seen in side view.' },
+      tags: { type: ['strength'], parts: ['chest', 'arms'], level: 1, impact: 'low', equip: 'dumbbells' }
+    },
+
+    // ===== LOWER BODY =====
+    bodyweight_squat: {
+      name: 'Bodyweight squat', cat: 'Lower body', view: 'side', equip: 'Bodyweight',
+      frames: [
+        { hx: 128, hy: 100, t: 174, aN: [75, 82], aF: [72, 80], lN: { ik: [138, 182] }, lF: { ik: [134, 182] }, hold: 0.3, move: 1.7 },
+        { hx: 104, hy: 130, t: 146, hd: 154, aN: [90, 92], aF: [88, 90], lN: { ik: [138, 182] }, lF: { ik: [134, 182] }, hold: 0.4, move: 1.3 }
+      ], fin: 1,
+      tempo: { phases: [{ label: 'Lower', secs: 2, to: 'finish', breath: 'Inhale', dir: 'down' }, { label: 'Pause', secs: 0.5, to: null, breath: 'Hold' }, { label: 'Stand', secs: 1.5, to: 'start', breath: 'Exhale', dir: 'up' }] },
+      muscles: 'Quads, glutes, hamstrings, core', start: 'Stand with feet about shoulder-width, toes slightly out, arms forward for balance.',
+      steps: ['Push your hips back and bend your knees.', 'Keep your chest up and heels down.', 'Lower until thighs are near parallel, or as deep as comfortable.', 'Press through your feet to stand.'],
+      breath: 'Inhale as you lower, exhale as you stand.', rx: '2–3 sets of 10–15 reps', rest: '45 seconds',
+      mistakes: ['Knees caving in', 'Heels lifting', 'Rounding the back'], mod: 'Chair squats.',
+      safety: 'Stop if your knees hurt; reduce the depth.',
+      cues: ['Hips back', 'Knees over toes', 'Chest up', 'Drive through your heels'],
+      voiceSetup: 'Stand with your feet about shoulder-width apart, toes slightly out, arms forward. Push your hips back and bend your knees, keeping your chest up and heels down. Then press through your feet to stand.',
+      voiceStart: 'Feet shoulder-width, chest up.', voiceBreathing: 'Inhale down, exhale up.', voiceFormCues: ['Knees over toes.', 'Heels down.', 'Chest proud.'],
+      voiceLastTwo: 'Drive through your heels.', repMode: 'guided', cameraView: 'side',
+      safetyShort: 'Reduce depth if your knees complain.', checkpoints: ['Knees track over toes', 'Heels stay down', 'Neutral spine'],
+      demoAudit: { replace: 'No', note: 'Hip hinge and depth are clear.' },
+      tags: { type: ['strength'], parts: ['legs', 'glutes'], level: 1, impact: 'low', equip: 'none' }
+    },
+    reverse_lunge: {
+      name: 'Reverse lunge', cat: 'Lower body', view: 'side', equip: 'Bodyweight (chair for balance optional)',
+      frames: [
+        { hx: 132, hy: 100, aN: [-6, 60], aF: [-8, 58], lN: { ik: [140, 182] }, lF: { ik: [134, 182] }, hold: 0.3, move: 1.5 },
+        { hx: 126, hy: 134, t: 178, aN: [-6, 60], aF: [-8, 58], lN: { ik: [142, 182], b: 1 }, lF: { ik: [78, 176], b: 1 }, fF: 60, hold: 0.4, move: 1.5 }
+      ], fin: 1,
+      tempo: { phases: [{ label: 'Step back', secs: 2, to: 'finish', breath: 'Inhale', dir: 'down' }, { label: 'Pause', secs: 0.5, to: null, breath: 'Hold' }, { label: 'Return', secs: 1.5, to: 'start', breath: 'Exhale', dir: 'up' }] },
+      muscles: 'Quads, glutes, hamstrings, balance', start: 'Stand tall, hands on hips or one hand on a chair for balance.',
+      steps: ['Step one foot back and bend both knees.', 'Lower until the back knee nears the floor.', 'Keep your front knee over your ankle.', 'Push through the front heel to return.'],
+      breath: 'Inhale as you lower, exhale as you return.', rx: '2–3 sets of 6–10 per side', rest: '45–60 seconds',
+      mistakes: ['Front knee caving in', 'Leaning forward a lot', 'Short step'], mod: 'Hold a chair and lower only halfway.',
+      safety: 'Use a chair for balance. Stop if your knee hurts.',
+      cues: ['Step back long', 'Front knee over ankle', 'Tall chest'],
+      voiceSetup: 'Stand tall with your hands on your hips, or hold a chair. Step one foot back and bend both knees until your back knee nears the floor. Keep your front knee over your ankle, then push through your front heel to stand.',
+      voiceStart: 'Stand tall, hands on hips.', voiceBreathing: 'Inhale down, exhale up.', voiceFormCues: ['Tall chest.', 'Front knee steady.', 'Push through the front heel.'],
+      voiceLastTwo: 'Stay tall.', repMode: 'guided', cameraView: 'side',
+      sideInstructions: { first: 'Right leg steps back first.', second: 'Now the left leg steps back.' },
+      safetyShort: 'Hold a chair if your balance wobbles.', checkpoints: ['Front knee over the ankle', 'Torso upright', 'Back knee lowers under the hip'],
+      demoAudit: { replace: 'No', note: 'Step back and drop are clear.' },
+      tags: { type: ['strength'], parts: ['legs', 'glutes'], level: 2, impact: 'low', equip: 'none' }, unilateral: true
+    },
+    split_squat: {
+      name: 'Split squat', cat: 'Lower body', view: 'side', equip: 'Bodyweight (chair for balance optional)',
+      frames: [
+        { hx: 116, hy: 104, aN: [-6, 60], aF: [-8, 58], lN: { ik: [142, 182], b: 1 }, lF: { ik: [80, 176], b: 1 }, fF: 60, hold: 0.3, move: 1.5 },
+        { hx: 120, hy: 134, aN: [-6, 60], aF: [-8, 58], lN: { ik: [142, 182], b: 1 }, lF: { ik: [80, 176], b: 1 }, fF: 60, hold: 0.4, move: 1.5 }
+      ], fin: 1,
+      tempo: { phases: [{ label: 'Lower', secs: 2, to: 'finish', breath: 'Inhale', dir: 'down' }, { label: 'Pause', secs: 0.5, to: null, breath: 'Hold' }, { label: 'Rise', secs: 1.5, to: 'start', breath: 'Exhale', dir: 'up' }] },
+      muscles: 'Quads, glutes, hamstrings', start: 'Stand in a long staggered stance, back heel lifted, hands on hips or on a chair.',
+      steps: ['Bend both knees and lower straight down.', 'Keep your front knee over your ankle.', 'Stop just above the floor.', 'Press up without moving your feet.'],
+      breath: 'Inhale as you lower, exhale as you rise.', rx: '2–3 sets of 8–10 per side', rest: '45–60 seconds',
+      mistakes: ['Stance too short', 'Front heel lifting', 'Leaning forward'], mod: 'Lower only halfway, holding a chair.',
+      safety: 'Use a chair for balance; stop with knee pain.',
+      cues: ['Straight down', 'Tall chest', 'Front heel down'],
+      voiceSetup: 'Stand in a long split stance with the back heel lifted, hands on your hips or a chair. Bend both knees and lower straight down, keeping your front knee over your ankle, then press up without moving your feet.',
+      voiceStart: 'Long stance, chest tall.', voiceBreathing: 'Inhale down, exhale up.', voiceFormCues: ['Straight down.', 'Front heel down.', 'Tall chest.'],
+      voiceLastTwo: 'Keep your chest tall.', repMode: 'guided', cameraView: 'side',
+      sideInstructions: { first: 'Right leg in front first.', second: 'Now switch: left leg in front.' },
+      safetyShort: 'Hold a chair for balance.', checkpoints: ['Front knee over ankle', 'Hips lower straight down', 'Torso upright'],
+      demoAudit: { replace: 'No', note: 'Vertical drop is clear.' },
+      tags: { type: ['strength'], parts: ['legs', 'glutes'], level: 2, impact: 'low', equip: 'none' }, unilateral: true
+    },
+    lateral_lunge: {
+      name: 'Side lunge', cat: 'Lower body', view: 'front', equip: 'Bodyweight',
+      frames: [
+        { hx: 125, hy: 106, aN: [20, -130], aF: [-20, 130], lN: { ik: [165, 182], b: 1 }, lF: { ik: [85, 182], b: -1 }, hold: 0.3, move: 1.5 },
+        { hx: 148, hy: 120, aN: [20, -130], aF: [-20, 130], lN: { ik: [165, 182], b: 1 }, lF: { ik: [85, 182], b: -1 }, hold: 0.4, move: 1.5 }
+      ], fin: 1,
+      tempo: { phases: [{ label: 'Shift', secs: 2, to: 'finish', breath: 'Inhale', dir: 'out' }, { label: 'Pause', secs: 0.5, to: null, breath: 'Hold' }, { label: 'Return', secs: 1.5, to: 'start', breath: 'Exhale', dir: 'in' }] },
+      muscles: 'Inner thighs, glutes, quads', start: 'Stand with feet wide, toes forward or slightly out, hands together at your chest.',
+      steps: ['Shift your hips back and to one side, bending that knee.', 'Keep the other leg straight.', 'Keep your chest up and heels down.', 'Push back to the middle.'],
+      breath: 'Inhale as you shift, exhale as you return.', rx: '2–3 sets of 8–10 per side', rest: '45 seconds',
+      mistakes: ['Knee caving in', 'Heel lifting', 'Rounding forward'], mod: 'Make the shift smaller.',
+      safety: 'Stop if you feel pain in the inner knee or groin.',
+      cues: ['Hips back', 'Other leg straight', 'Heels down'],
+      voiceSetup: 'Stand with your feet wide and hands together at your chest. Shift your hips back and over one leg, bending that knee while the other leg stays straight. Keep your heels down, then push back to the middle.',
+      voiceStart: 'Wide stance, hands at chest.', voiceBreathing: 'Inhale as you shift.', voiceFormCues: ['Hips back.', 'Knee over toes.', 'Heels down.'],
+      voiceLastTwo: 'Chest up.', repMode: 'guided', cameraView: 'front',
+      sideInstructions: { first: 'Right side first.', second: 'Now shift to the left.' },
+      safetyShort: 'Make it smaller if your groin pulls.', checkpoints: ['Bent knee over toes', 'Straight leg stays straight', 'Heels down'],
+      demoAudit: { replace: 'No', note: 'Front view suits the side shift.' },
+      tags: { type: ['strength'], parts: ['legs', 'glutes'], level: 2, impact: 'low', equip: 'none' }, unilateral: true
+    },
+    wall_sit: {
+      name: 'Wall sit', cat: 'Lower body', view: 'side', equip: 'Wall', props: [{ type: 'wallL', x: 100 }],
+      frames: [
+        { hx: 114, hy: 131, t: 180, aN: [60, 95], aF: [58, 93], lN: { ik: [152, 182], b: 1 }, lF: { ik: [149, 182], b: 1 }, hold: 1.4, move: 1.5 },
+        { hx: 114, hy: 132, t: 180, aN: [60, 95], aF: [58, 93], lN: { ik: [152, 182], b: 1 }, lF: { ik: [149, 182], b: 1 }, hold: 1.4, move: 1.5 }
+      ], fin: 1,
+      muscles: 'Quads, glutes', start: 'Stand with your back against a wall, feet about two foot-lengths in front.',
+      steps: ['Slide down the wall until your knees are bent (aim for about 90°, or higher if needed).', 'Keep knees over ankles.', 'Press your back into the wall.', 'Hold, then slide up.'],
+      breath: 'Breathe steadily throughout.', rx: '2–3 holds of 20–45 seconds', rest: '45 seconds',
+      mistakes: ['Knees past the toes', 'Sliding too low', 'Holding the breath'], mod: 'Slide down only partway.',
+      safety: 'Stop if your knees hurt. Slide up slowly.',
+      cues: ['Back flat on the wall', 'Knees over ankles', 'Keep breathing'],
+      voiceSetup: 'Stand with your back against a wall and your feet a little in front of you. Slide down until your knees are bent, keeping them over your ankles. Press your back into the wall and keep breathing.',
+      voiceStart: 'Back on the wall, knees over ankles.', voiceBreathing: 'Breathe steadily.', voiceFormCues: ['Back flat.', 'Knees over ankles.', 'Keep breathing.'],
+      voiceTen: 'Ten seconds left. You\u2019ve got this.', voiceFinish: 'Slide up slowly.', repMode: 'timed', cameraView: 'side',
+      safetyShort: 'Go less deep if your knees hurt.', checkpoints: ['Back flat on the wall', 'Knees over ankles', 'Thighs near parallel (or higher)'],
+      demoAudit: { replace: 'No', note: 'Seated position against the wall is clear.' },
+      tags: { type: ['strength'], parts: ['legs', 'glutes'], level: 2, impact: 'low', equip: 'wall' }
+    },
+    band_rdl: {
+      name: 'Band Romanian deadlift', cat: 'Lower body', view: 'side', equip: 'Resistance band', props: [{ type: 'band', from: [136, 185], fromF: [130, 185] }],
+      frames: [
+        { hx: 130, hy: 100, t: 178, aN: [2, 2], aF: [-2, 0], lN: { ik: [136, 182], b: 1 }, lF: { ik: [131, 182], b: 1 }, hold: 0.3, move: 1.7 },
+        { hx: 112, hy: 104, t: 108, hd: 112, aN: [3, 3], aF: [1, 1], lN: { ik: [136, 182], b: 1 }, lF: { ik: [131, 182], b: 1 }, hold: 0.4, move: 1.5 }
+      ], fin: 1,
+      tempo: { phases: [{ label: 'Hinge', secs: 2, to: 'finish', breath: 'Inhale', dir: 'down' }, { label: 'Pause', secs: 0.5, to: null, breath: 'Hold' }, { label: 'Stand', secs: 1.5, to: 'start', breath: 'Exhale', dir: 'up' }] },
+      muscles: 'Hamstrings, glutes, lower back', start: 'Stand on the band, feet hip-width, holding the ends in front of your thighs, knees soft.',
+      steps: ['Push your hips back, sliding your hands down your thighs.', 'Keep your back flat and the band close to your legs.', 'Stop when you feel a stretch in your hamstrings.', 'Squeeze your glutes to stand.'],
+      breath: 'Inhale as you hinge, exhale as you stand.', rx: '2–3 sets of 10–12 reps', rest: '45 seconds',
+      mistakes: ['Rounding the back', 'Bending the knees into a squat', 'Hands drifting away from the legs'], mod: 'Hinge only halfway.',
+      safety: 'Stop if you feel lower-back pain. Keep the movement in your hips.',
+      cues: ['Hips back', 'Flat back', 'Squeeze your glutes to stand'],
+      voiceSetup: 'Stand on the band with feet hip-width, holding the ends in front of your thighs, knees soft. Push your hips back, keeping your back flat, until you feel a stretch in your hamstrings. Squeeze your glutes to stand.',
+      voiceStart: 'Knees soft, back flat.', voiceBreathing: 'Inhale as you hinge.', voiceFormCues: ['Hips back.', 'Flat back.', 'Band close to your legs.'],
+      voiceLastTwo: 'Squeeze your glutes.', repMode: 'guided', cameraView: 'side',
+      safetyShort: 'Flat back always; stop with back pain.', checkpoints: ['Neutral spine', 'Movement from the hips', 'Knees only softly bent'],
+      demoAudit: { replace: 'Optional', note: 'Hinge depth is approximate.' },
+      tags: { type: ['strength'], parts: ['legs', 'glutes', 'back'], level: 1, impact: 'low', equip: 'band' }
+    },
+    donkey_kick: {
+      name: 'Donkey kick', cat: 'Lower body', view: 'side', equip: 'Mat', props: MAT,
+      frames: [mix(QUAD, { hold: 0.3, move: 1.3 }), mix(QUAD, { lF: [-112, 178], fF: -90, hold: 0.5, move: 1.3 })], fin: 1,
+      tempo: { phases: [{ label: 'Kick up', secs: 1.5, to: 'finish', breath: 'Exhale', dir: 'up' }, { label: 'Squeeze', secs: 0.5, to: null, breath: 'Hold' }, { label: 'Lower', secs: 1.5, to: 'start', breath: 'Inhale', dir: 'down' }] },
+      muscles: 'Glutes', start: 'On all fours: hands under shoulders, knees under hips, back flat.',
+      steps: ['Keep one knee bent at 90°.', 'Press that foot up toward the ceiling.', 'Stop when your thigh is level with your back.', 'Lower with control.'],
+      breath: 'Exhale as you lift, inhale as you lower.', rx: '2–3 sets of 10–15 per side', rest: '30–45 seconds',
+      mistakes: ['Arching the lower back', 'Swinging the leg', 'Hips rotating'], mod: 'Make the lift smaller.',
+      safety: 'Pad your knees; keep your back flat.',
+      cues: ['Foot to the ceiling', 'Back flat', 'Squeeze your glute'],
+      voiceSetup: 'Get on all fours with your hands under your shoulders and knees under your hips. Keeping one knee bent, press that foot up toward the ceiling until your thigh is level with your back, then lower slowly.',
+      voiceStart: 'All fours, back flat.', voiceBreathing: 'Exhale as you lift.', voiceFormCues: ['Back flat.', 'Squeeze your glute.', 'No swinging.'],
+      voiceLastTwo: 'Squeeze at the top.', repMode: 'guided', cameraView: 'side',
+      sideInstructions: { first: 'Right leg first.', second: 'Now the left leg.' },
+      safetyShort: 'Keep your back flat; pad your knees.', checkpoints: ['Back stays flat', 'Knee stays bent at about 90°', 'Thigh no higher than the back'],
+      demoAudit: { replace: 'No', note: 'Leg path is clear (shown on one side).' },
+      tags: { type: ['strength'], parts: ['glutes'], level: 1, impact: 'low', equip: 'mat' }, unilateral: true
+    },
+    side_leg_raise: {
+      name: 'Side-lying leg raise', cat: 'Lower body', view: 'front', equip: 'Mat', props: MAT,
+      frames: [
+        { hx: 140, hy: 166, t: 90, hd: 90, aN: [90, -148], aF: { ik: [175, 182], b: -1 }, lN: [-90, -90], lF: [-90, -90], fN: 0, fF: 0, hold: 0.3, move: 1.3 },
+        { hx: 140, hy: 166, t: 90, hd: 90, aN: [90, -148], aF: { ik: [175, 182], b: -1 }, lN: [-90, -90], lF: [-118, -118], fN: 0, fF: -30, hold: 0.5, move: 1.4 }
+      ], fin: 1,
+      tempo: { phases: [{ label: 'Lift', secs: 1.5, to: 'finish', breath: 'Exhale', dir: 'up' }, { label: 'Pause', secs: 0.5, to: null, breath: 'Hold' }, { label: 'Lower', secs: 1.5, to: 'start', breath: 'Inhale', dir: 'down' }] },
+      muscles: 'Outer hips and glutes (gluteus medius)', start: 'Lie on your side, legs straight and stacked, head resting on your lower arm.',
+      steps: ['Keep your hips stacked; don\u2019t roll back.', 'Lift the top leg with toes pointing forward.', 'Lift to about hip-width or a little higher.', 'Lower slowly.'],
+      breath: 'Exhale as you lift, inhale as you lower.', rx: '2–3 sets of 10–15 per side', rest: '30 seconds',
+      mistakes: ['Rolling the hips backward', 'Toes turning up', 'Swinging'], mod: 'Bend the bottom knee for stability.',
+      safety: 'Small, controlled lifts. Stop if your hip pinches.',
+      cues: ['Hips stacked', 'Toes forward', 'Slow lowering'],
+      voiceSetup: 'Lie on your side with your legs straight and stacked, head resting on your lower arm. Keeping your hips stacked and toes pointing forward, lift the top leg a little, then lower slowly.',
+      voiceStart: 'Hips stacked, toes forward.', voiceBreathing: 'Exhale as you lift.', voiceFormCues: ['Don\u2019t roll back.', 'Toes forward.', 'Slow down.'],
+      voiceLastTwo: 'Keep your hips stacked.', repMode: 'guided', cameraView: 'front',
+      sideInstructions: { first: 'Lie on your left side and lift the right leg first.', second: 'Now turn over and lift the left leg.' },
+      safetyShort: 'Small lifts; stop if your hip pinches.', checkpoints: ['Hips stacked vertically', 'Toes point forward', 'Leg lifts in line with the body'],
+      demoAudit: { replace: 'Optional', note: 'Lying figure is a rotated front view; head and arm placement are approximate.' },
+      tags: { type: ['strength'], parts: ['glutes', 'legs'], level: 1, impact: 'low', equip: 'mat' }, unilateral: true
+    },
+    squat_jump: {
+      name: 'Squat jump', cat: 'Cardio', view: 'side', equip: 'Bodyweight',
+      frames: [
+        { hx: 106, hy: 128, t: 146, hd: 154, aN: [-20, -10], aF: [-22, -12], lN: { ik: [138, 182] }, lF: { ik: [134, 182] }, hold: 0.2, move: 0.45 },
+        { hx: 130, hy: 92, t: 178, aN: [120, 125], aF: [118, 123], lN: { ik: [134, 174] }, lF: { ik: [130, 174] }, fN: 60, fF: 60, hold: 0.05, move: 0.45 }
+      ], fin: 1,
+      muscles: 'Quads, glutes, calves, heart and lungs', start: 'Stand with feet shoulder-width apart.',
+      steps: ['Squat down with hips back and arms behind you.', 'Jump up explosively, swinging your arms.', 'Land softly on the balls of your feet, then heels.', 'Sink straight into the next squat.'],
+      breath: 'Inhale as you squat, exhale as you jump.', rx: '20–40 seconds', rest: '30–45 seconds',
+      mistakes: ['Landing with straight legs', 'Knees caving in on landing', 'Loud landings'], mod: 'Squat and rise onto your toes without jumping.',
+      safety: 'High impact. Only on a non-slip floor with supportive shoes; skip if you have knee or ankle pain.',
+      cues: ['Land softly', 'Knees over toes', 'Swing your arms'],
+      voiceSetup: 'Stand with your feet shoulder-width apart. Squat down, then jump up and land softly, sinking straight into the next squat. If you prefer no jumping, rise onto your toes instead.',
+      voiceStart: 'Squat, jump, land softly.', voiceBreathing: 'Exhale as you jump.', voiceFormCues: ['Land softly.', 'Knees over toes.', 'Use your arms.'],
+      voiceTen: 'Ten seconds left. Soft landings.', voiceFinish: 'Great power. Breathe.', repMode: 'timed', cameraView: 'side',
+      safetyShort: 'High impact: supportive shoes and a non-slip floor.', checkpoints: ['Soft, bent-knee landing', 'Knees track over toes', 'Controlled rhythm'],
+      demoAudit: { replace: 'Optional', note: 'Jump height is fixed in the animation.' },
+      tags: { type: ['hiit', 'cardio'], parts: ['legs', 'glutes', 'full'], level: 3, impact: 'high', equip: 'none' }
+    },
+
+    // ===== CARDIO =====
+    standing_punches: {
+      name: 'Standing punches', cat: 'Cardio', view: 'side', equip: 'Bodyweight',
+      frames: [
+        { aN: [86, 88], aF: [-30, 150], lN: { ik: [146, 182], b: 1 }, lF: { ik: [116, 182], b: 1 }, hold: 0.05, move: 0.3 },
+        { aN: [-30, 150], aF: [86, 88], lN: { ik: [146, 182], b: 1 }, lF: { ik: [116, 182], b: 1 }, hold: 0.05, move: 0.3 }
+      ], fin: 1,
+      muscles: 'Shoulders, arms, core, heart and lungs', start: 'Stand in a staggered stance, knees soft, fists up by your cheeks.',
+      steps: ['Punch one arm straight forward at shoulder height.', 'Pull it back to your cheek as the other arm punches.', 'Rotate slightly through your waist.', 'Keep a steady, comfortable rhythm.'],
+      breath: 'Exhale with each punch.', rx: '30–90 seconds', rest: 'None between cardio moves',
+      mistakes: ['Locking the elbows', 'Holding the breath', 'Stiff legs'], mod: 'Punch slowly with smaller range.',
+      safety: 'Don\u2019t snap your elbows straight.',
+      cues: ['Soft elbows', 'Exhale on each punch', 'Fists back to cheeks'],
+      voiceSetup: 'Stand with one foot slightly ahead, knees soft and fists up by your cheeks. Punch one arm forward at shoulder height, pull it back as the other arm punches. Breathe out with each punch.',
+      voiceStart: 'Fists up, knees soft.', voiceBreathing: 'Exhale on each punch.', voiceFormCues: ['Soft elbows.', 'Twist a little.', 'Keep moving.'],
+      voiceFinish: 'Nice punching.', repMode: 'timed', cameraView: 'side',
+      safetyShort: 'Don\u2019t lock your elbows.', checkpoints: ['Elbows not locked', 'Fists return to the face', 'Knees soft'],
+      demoAudit: { replace: 'No', note: 'Alternating punches are clear.' },
+      tags: { type: ['cardio', 'warmup'], parts: ['shoulders', 'arms', 'full'], level: 1, impact: 'low', equip: 'none' }
+    },
+    butt_kicks: {
+      name: 'Butt kicks', cat: 'Cardio', view: 'side', equip: 'Bodyweight',
+      frames: [
+        { lN: [-6, -165], fN: -100, aN: [28, 100], aF: [-28, 30], hold: 0.03, move: 0.3 },
+        { aN: [0, 50], aF: [0, 50], hold: 0, move: 0.3 },
+        { lF: [-6, -165], fF: -100, aN: [-28, 30], aF: [28, 100], hold: 0.03, move: 0.3 },
+        { aN: [0, 50], aF: [0, 50], hold: 0, move: 0.3 }
+      ], fin: 2, startPoseFrame: 1,
+      muscles: 'Hamstrings, calves, heart and lungs', start: 'Stand tall, feet hip-width.',
+      steps: ['Jog lightly on the spot.', 'Kick each heel up toward your bottom.', 'Pump your arms.', 'Stay light on the balls of your feet.'],
+      breath: 'Breathe rhythmically.', rx: '30–60 seconds', rest: '20–30 seconds',
+      mistakes: ['Leaning forward', 'Landing heavily', 'Holding the breath'], mod: 'Walk it: step and curl each heel back without jogging.',
+      safety: 'Moderate impact. Use the walking version if your knees or ankles complain.',
+      cues: ['Light feet', 'Heels to bottom', 'Stand tall'],
+      voiceSetup: 'Stand tall with your feet hip-width apart. Jog lightly on the spot, kicking each heel toward your bottom and pumping your arms. For low impact, just walk and curl each heel back.',
+      voiceStart: 'Light and quick.', voiceBreathing: 'Breathe in rhythm.', voiceFormCues: ['Stand tall.', 'Light feet.', 'Pump your arms.'],
+      voiceTen: 'Ten seconds left. Keep it light.', voiceFinish: 'Good work.', repMode: 'timed', cameraView: 'side',
+      safetyShort: 'Walk it if your knees or ankles complain.', checkpoints: ['Upright trunk', 'Soft landings', 'Heel travels toward the glute'],
+      demoAudit: { replace: 'No', note: 'Heel kick is clear in side view.' },
+      tags: { type: ['cardio', 'hiit'], parts: ['legs', 'full'], level: 2, impact: 'high', equip: 'none' }
+    },
+    high_knees: {
+      name: 'High knees', cat: 'Cardio', view: 'side', equip: 'Bodyweight',
+      frames: [
+        { lN: [88, 5], fN: 100, aN: [-35, 30], aF: [35, 115], hold: 0.03, move: 0.28 }, { aN: [0, 50], aF: [0, 50], hold: 0, move: 0.28 },
+        { lF: [88, 5], fF: 100, aN: [35, 115], aF: [-35, 30], hold: 0.03, move: 0.28 }, { aN: [0, 50], aF: [0, 50], hold: 0, move: 0.28 }
+      ], fin: 2, startPoseFrame: 1,
+      muscles: 'Hip flexors, quads, calves, core, heart and lungs', start: 'Stand tall, feet hip-width.',
+      steps: ['Run on the spot, driving each knee to hip height.', 'Pump your arms.', 'Land softly on the balls of your feet.', 'Keep your chest tall.'],
+      breath: 'Breathe quickly and rhythmically.', rx: '20–45 seconds', rest: '20–40 seconds',
+      mistakes: ['Leaning back', 'Heavy landings', 'Knees barely lifting'], mod: 'Marching in place with high knees (no running).',
+      safety: 'High impact. March instead if you feel dizzy or your joints hurt.',
+      cues: ['Knees up', 'Pump your arms', 'Light feet'],
+      voiceSetup: 'Stand tall. Run on the spot, driving each knee up toward hip height and pumping your arms. Land softly. For low impact, march with high knees instead of running.',
+      voiceStart: 'Knees up, light feet.', voiceBreathing: 'Breathe fast and steady.', voiceFormCues: ['Knees up.', 'Chest tall.', 'Arms pumping.'],
+      voiceTen: 'Ten seconds left. Push!', voiceFinish: 'Excellent. Catch your breath.', repMode: 'timed', cameraView: 'side',
+      safetyShort: 'March instead if dizzy or your joints hurt.', checkpoints: ['Knees to about hip height', 'Upright trunk', 'Soft landings'],
+      demoAudit: { replace: 'No', note: 'Knee drive and arm pump are clear.' },
+      tags: { type: ['cardio', 'hiit'], parts: ['legs', 'core', 'full'], level: 2, impact: 'high', equip: 'none' }
+    },
+    jumping_jacks: {
+      name: 'Jumping jacks', cat: 'Cardio', view: 'front', equip: 'Bodyweight',
+      frames: [
+        { lN: { ik: [136, 182], b: 1 }, lF: { ik: [124, 182], b: -1 }, aN: [6, 4], aF: [-6, -4], hold: 0.03, move: 0.3 },
+        { hy: 98, lN: { ik: [162, 180], b: 1 }, lF: { ik: [98, 180], b: -1 }, aN: [155, 168], aF: [-155, -168], hold: 0.03, move: 0.3 }
+      ], fin: 1,
+      muscles: 'Whole body, calves, shoulders, heart and lungs', start: 'Stand tall, feet together, arms by your sides.',
+      steps: ['Jump your feet out wide as your arms sweep overhead.', 'Jump your feet back together as your arms come down.', 'Land softly with knees slightly bent.', 'Keep a steady rhythm.'],
+      breath: 'Breathe rhythmically.', rx: '30–60 seconds', rest: '20–40 seconds',
+      mistakes: ['Landing on flat, stiff legs', 'Arching the back', 'Going faster than you can control'], mod: 'Step-out jacks (no jumping).',
+      safety: 'High impact. Use step-out jacks if your knees, ankles or pelvic floor complain.',
+      cues: ['Soft landings', 'Reach tall', 'Steady rhythm'],
+      voiceSetup: 'Stand tall with your feet together. Jump your feet out wide as your arms sweep overhead, then jump back together as your arms come down. Land softly. For low impact, step out instead of jumping.',
+      voiceStart: 'Soft, bouncy jumps.', voiceBreathing: 'Breathe in rhythm.', voiceFormCues: ['Soft knees.', 'Arms all the way up.', 'Keep it steady.'],
+      voiceTen: 'Ten seconds left. Keep going!', voiceFinish: 'Great cardio.', repMode: 'timed', cameraView: 'front',
+      safetyShort: 'High impact: switch to step-out jacks if anything hurts.', checkpoints: ['Soft, bent-knee landings', 'Arms fully overhead', 'Ribs down'],
+      demoAudit: { replace: 'No', note: 'Clear in front view.' },
+      tags: { type: ['cardio', 'hiit'], parts: ['full'], level: 3, impact: 'high', equip: 'none' }
+    },
+
+    // ===== STRETCH / MOBILITY =====
+    childs_pose: {
+      name: 'Child\u2019s pose', cat: 'Cooldown', view: 'side', equip: 'Mat', props: MAT,
+      frames: [
+        { hx: 95, hy: 157, t: 76, hd: 82, aN: [88, 88], aF: [88, 88], lN: [56.7, -90], lF: [57.5, -90], fN: -90, fF: -90, hold: 1.5, move: 2 },
+        { hx: 94, hy: 158, t: 77, hd: 83, aN: [88, 88], aF: [88, 88], lN: [55.5, -90], lF: [56.3, -90], fN: -90, fF: -90, hold: 1.5, move: 2 }
+      ], fin: 1,
+      muscles: 'Lower back, hips, shoulders (relaxation)', start: 'Kneel on your mat, big toes together, knees comfortably apart.',
+      steps: ['Sit your hips back toward your heels.', 'Walk your hands forward and lower your chest.', 'Rest your forehead on the mat or a cushion.', 'Breathe slowly into your back.'],
+      breath: 'Slow, deep breaths into your lower back.', rx: '30–60 seconds', rest: 'None',
+      mistakes: ['Forcing the hips down', 'Tense shoulders'], mod: 'Place a pillow between your heels and hips, or under your chest.',
+      safety: 'Skip if it hurts your knees; lie on your back and hug your knees instead.',
+      cues: ['Hips back', 'Relax your shoulders', 'Breathe slowly'],
+      voiceSetup: 'Kneel on your mat with big toes together and knees apart. Sit your hips back toward your heels, walk your hands forward, and rest your forehead down. Breathe slowly and let your back relax.',
+      voiceStart: 'Hips back, arms long.', voiceBreathing: 'Breathe slowly into your back.', voiceFormCues: ['Relax your shoulders.', 'Let your hips sink.', 'Slow breaths.'],
+      voiceTen: 'Ten seconds left. Keep breathing.', voiceFinish: 'Come up slowly.', repMode: 'timed', cameraView: 'side',
+      safetyShort: 'Use a pillow, or skip it if your knees hurt.', checkpoints: ['Hips toward heels', 'Arms long and relaxed', 'Neck relaxed'],
+      demoAudit: { replace: 'Optional', note: 'Torso is one straight segment, so the rounded back is not shown.' },
+      tags: { type: ['stretch', 'mobility'], parts: ['back', 'legs'], level: 1, impact: 'low', equip: 'mat' }
+    },
+    cobra_stretch: {
+      name: 'Cobra stretch', cat: 'Cooldown', view: 'side', equip: 'Mat', props: MAT,
+      frames: [mix(PRONE, { aN: { ik: [150, 182], b: 1 }, aF: { ik: [148, 182], b: 1 }, hold: 0.8, move: 2 }), mix(PRONE, { t: 112, hd: 118, aN: { ik: [158, 182], b: 1 }, aF: { ik: [156, 182], b: 1 }, hold: 2.5, move: 2 })], fin: 1,
+      muscles: 'Abs, hip flexors, chest (stretch); lower back (mobility)', start: 'Lie face down, hands under your shoulders, elbows close to your sides.',
+      steps: ['Press gently through your hands to lift your chest.', 'Keep your hips on the mat.', 'Lift only as high as is comfortable for your back.', 'Hold and breathe, then lower slowly.'],
+      breath: 'Inhale as you lift, breathe slowly in the hold.', rx: '20–40 seconds', rest: 'None',
+      mistakes: ['Pushing too high', 'Shrugging', 'Lifting the hips'], mod: 'Stay on your forearms (sphinx pose).',
+      safety: 'Stop if you feel any pinching in your lower back.',
+      cues: ['Hips down', 'Shoulders away from ears', 'Gentle lift'],
+      voiceSetup: 'Lie face down with your hands under your shoulders and elbows close to your sides. Gently press up to lift your chest, keeping your hips on the mat. Lift only as high as feels comfortable, and breathe.',
+      voiceStart: 'Hips down, gentle lift.', voiceBreathing: 'Breathe slowly.', voiceFormCues: ['Shoulders down.', 'Hips on the mat.', 'Gentle stretch.'],
+      voiceTen: 'Ten seconds left. Keep breathing.', voiceFinish: 'Lower slowly.', repMode: 'timed', cameraView: 'side',
+      safetyShort: 'Stop if your lower back pinches.', checkpoints: ['Hips stay on the mat', 'Shoulders down', 'Lift within comfort'],
+      demoAudit: { replace: 'Optional', note: 'Back arch is shown as a torso tilt.' },
+      tags: { type: ['stretch', 'mobility'], parts: ['core', 'back'], level: 1, impact: 'low', equip: 'mat' }
+    },
+    hamstring_stretch: {
+      name: 'Standing hamstring stretch', cat: 'Cooldown', view: 'side', equip: 'Bodyweight', sides: true,
+      frames: [
+        { aN: [3, 8], aF: [-2, 4], hold: 0.6, move: 1.8 },
+        { hx: 122, hy: 112, t: 140, hd: 145, aN: { ik: [142, 140], b: -1 }, aF: { ik: [140, 142], b: -1 }, lN: { ik: [165, 182], b: 1 }, fN: 125, lF: { ik: [118, 182], b: 1 }, hold: 3.5, move: 1.8 }
+      ], fin: 1,
+      muscles: 'Hamstrings, calves', start: 'Stand tall, then place one heel a small step forward, toes up.',
+      steps: ['Bend your back knee slightly.', 'Hinge forward from your hips with a flat back.', 'Rest your hands on your bent thigh.', 'Hold where you feel a stretch behind the straight leg.'],
+      breath: 'Slow breaths; relax into the stretch.', rx: '20–30 seconds per leg', rest: 'None',
+      mistakes: ['Rounding the back', 'Bouncing', 'Locking the front knee hard'], mod: 'Hinge less.',
+      safety: 'A mild pull only; never sharp.',
+      cues: ['Flat back', 'Hips back', 'Breathe'],
+      voiceSetup: 'Stand tall and place one heel a small step forward with toes up. Bend the back knee slightly and hinge forward from your hips with a flat back, hands on your bent thigh. Hold where you feel the stretch.',
+      voiceStart: 'Heel forward, flat back.', voiceBreathing: 'Breathe slowly.', voiceFormCues: ['Flat back.', 'Hips back.', 'No bouncing.'],
+      voiceTen: 'Ten seconds left. Keep breathing.', voiceFinish: 'Stand up slowly.', repMode: 'timed', cameraView: 'side',
+      sideInstructions: { first: 'Right leg forward first.', second: 'Now the left leg forward.' },
+      safetyShort: 'Mild stretch only; never bounce.', checkpoints: ['Neutral spine', 'Hinge from the hips', 'Front knee soft, not locked'],
+      demoAudit: { replace: 'No', note: 'Heel-forward hinge is clear.' },
+      tags: { type: ['stretch'], parts: ['legs'], level: 1, impact: 'low', equip: 'none' }, unilateral: true
+    },
+    butterfly_stretch: {
+      name: 'Butterfly stretch', cat: 'Cooldown', view: 'front', equip: 'Mat', props: MAT,
+      frames: [
+        { hx: 130, hy: 170, t: 180, aN: { ik: [135, 176], b: 1 }, aF: { ik: [125, 176], b: -1 }, lN: { ik: [136, 180], b: 1 }, lF: { ik: [124, 180], b: -1 }, fN: 90, fF: -90, hold: 1.5, move: 2 },
+        { hx: 130, hy: 170, t: 176, hd: 172, aN: { ik: [135, 176], b: 1 }, aF: { ik: [125, 176], b: -1 }, lN: { ik: [136, 180], b: 1 }, lF: { ik: [124, 180], b: -1 }, fN: 90, fF: -90, hold: 1.5, move: 2 }
+      ], fin: 1,
+      muscles: 'Inner thighs, hips', start: 'Sit tall on your mat, soles of your feet together, knees falling out to the sides.',
+      steps: ['Hold your ankles or feet.', 'Sit tall through your spine.', 'Let your knees relax toward the floor.', 'Optionally lean forward slightly from your hips.'],
+      breath: 'Slow breaths; let your hips relax on each exhale.', rx: '30–45 seconds', rest: 'None',
+      mistakes: ['Pressing the knees down with force', 'Rounding the back'], mod: 'Move your feet further from your body, or sit on a cushion.',
+      safety: 'Never push your knees down. Stop with groin or knee pain.',
+      cues: ['Sit tall', 'Knees relax', 'Breathe out and soften'],
+      voiceSetup: 'Sit tall on your mat with the soles of your feet together and your knees falling out to the sides. Hold your ankles, sit up tall, and let your knees relax down. Never push them.',
+      voiceStart: 'Soles together, sit tall.', voiceBreathing: 'Relax your hips on each breath out.', voiceFormCues: ['Sit tall.', 'Relax your knees.', 'Slow breaths.'],
+      voiceTen: 'Ten seconds left. Keep breathing.', voiceFinish: 'Release slowly.', repMode: 'timed', cameraView: 'front',
+      safetyShort: 'Never push your knees down.', checkpoints: ['Tall spine', 'Knees relaxed, not forced', 'Feet together'],
+      demoAudit: { replace: 'Optional', note: 'Seated front view; leg shapes are approximate.' },
+      tags: { type: ['stretch', 'mobility'], parts: ['legs'], level: 1, impact: 'low', equip: 'mat' }
+    }
+  };
+
+  // ---------- tags for the original 29 exercises (added, nothing else changes) ----------
+  function T(type, parts, level, impact, equip) { return { type: type, parts: parts, level: level, impact: impact || 'low', equip: equip || 'none' }; }
+  var OLD_TAGS = {
+    march: T(['warmup', 'cardio'], ['legs', 'full'], 1), shoulder_rolls: T(['warmup', 'mobility'], ['shoulders'], 1), arm_circles: T(['warmup', 'mobility'], ['shoulders'], 1),
+    hip_circles: T(['warmup', 'mobility'], ['legs', 'core'], 1), wall_pushup: T(['strength'], ['chest', 'arms', 'shoulders'], 1, 'low', 'wall'),
+    band_chest_press: T(['strength'], ['chest', 'arms'], 1, 'low', 'band'), band_curl: T(['strength'], ['arms'], 1, 'low', 'band'),
+    band_row: T(['strength'], ['back', 'arms'], 1, 'low', 'band'), band_kickback: T(['strength'], ['arms'], 1, 'low', 'band'),
+    db_overhead_triceps: T(['strength'], ['arms', 'shoulders'], 2, 'low', 'dumbbells'), db_lateral_raise: T(['strength'], ['shoulders'], 1, 'low', 'dumbbells'),
+    prone_y_raise: T(['strength'], ['back', 'shoulders'], 1, 'low', 'mat'), chair_squat: T(['strength'], ['legs', 'glutes'], 1, 'low', 'chair'),
+    sumo_squat: T(['strength'], ['legs', 'glutes'], 1), glute_bridge: T(['strength', 'core'], ['glutes', 'legs', 'core'], 1, 'low', 'mat'),
+    calf_raise: T(['strength'], ['legs'], 1, 'low', 'chair'), bird_dog: T(['core'], ['core', 'back', 'glutes'], 1, 'low', 'mat'),
+    knee_drive_crunch: T(['core', 'cardio'], ['core'], 1), side_crunch: T(['core'], ['core'], 1),
+    side_steps: T(['cardio'], ['legs', 'full'], 1), step_touch: T(['cardio', 'warmup'], ['full'], 1), step_jacks: T(['cardio', 'hiit'], ['full'], 1),
+    dance: T(['cardio'], ['full'], 1), brisk_walk: T(['cardio'], ['legs', 'full'], 1),
+    chest_stretch: T(['stretch'], ['chest'], 1), triceps_stretch: T(['stretch'], ['arms'], 1), calf_stretch: T(['stretch'], ['legs'], 1, 'low', 'wall'),
+    quad_stretch: T(['stretch'], ['legs'], 1, 'low', 'chair'), deep_breathing: T(['stretch', 'warmup'], ['full'], 1)
+  };
+  var OLD_UNILATERAL = { bird_dog: true, knee_drive_crunch: true, side_crunch: true };
+
+  Object.keys(NEW).forEach(function (id) {
+    if (EX[id]) return; // never overwrite
+    var e = NEW[id];
+    if (!e.media) e.media = SVG_ONLY2;
+    if (!e.view) e.view = 'side';
+    EX[id] = e;
+  });
+  Object.keys(OLD_TAGS).forEach(function (id) {
+    if (EX[id] && !EX[id].tags) EX[id].tags = OLD_TAGS[id];
+    if (EX[id] && OLD_UNILATERAL[id] && EX[id].unilateral === undefined) EX[id].unilateral = true;
+  });
+})();
+if (typeof module !== 'undefined') module.exports = EX;
+
+// ======================================================================
+// v2.1 Pilates mat exercises. Loaded after exercises-v2.js. Adds new exercises only and
+// adds the 'pilates' type tag to existing Pilates-style moves. Instructions are original
+// wording based on standard mat-Pilates technique.
+// ======================================================================
+(function () {
+  function mix(a, b) { var o = {}; for (var k in a) o[k] = a[k]; for (var k2 in b) o[k2] = b[k2]; return o; }
+  var MAT = [{ type: 'mat' }];
+  var MEDIA = { svg: true, video: null, gif: null, poster: null, validated: false, status: 'SVG animation only; not reviewed by a qualified trainer' };
+  var LIE = { hx: 122, hy: 175, t: -90, hd: -90 };
+  var CURL = { hx: 122, hy: 175, t: -112, hd: -105 };               // head and shoulders lifted
+  var TABLE = { lN: [180, 90], lF: [181, 91], fN: 90, fF: 90 };      // knees over hips, shins level
+  var PRONE = { hx: 110, hy: 177, t: 90, hd: 96, aN: [92, 92], aF: [92, 92], lN: [-90, -90], lF: [-89, -89], fN: -90, fF: -90 };
+  var SEAT = { hx: 110, hy: 174, t: 180, lN: [90, 90], lF: [91, 91], fN: 180, fF: 180 }; // sitting, legs long
+  function T(parts, level) { return { type: ['pilates', 'core'], parts: parts, level: level, impact: 'low', equip: 'mat' }; }
+  function tempo(a, b, c, labels, breaths, dirs) {
+    return { phases: [{ label: labels[0], secs: a, to: 'finish', breath: breaths[0], dir: dirs[0] }, { label: labels[1], secs: b, to: null, breath: 'Hold' }, { label: labels[2], secs: c, to: 'start', breath: breaths[1], dir: dirs[1] }] };
+  }
+
+  var NEW = {
+    pilates_hundred: {
+      name: 'Pilates hundred', cat: 'Core', view: 'side', equip: 'Mat', props: MAT,
+      frames: [mix(CURL, mix(TABLE, { aN: [80, 80], aF: [80, 80], hold: 0.05, move: 0.45 })), mix(CURL, mix(TABLE, { aN: [90, 90], aF: [90, 90], hold: 0.05, move: 0.45 }))], fin: 1,
+      muscles: 'Deep core, upper abs, hip flexors; builds breathing control', start: 'Lie on your back, knees bent at 90° above your hips (tabletop). Lift your head and shoulders and reach your arms long beside your hips.',
+      steps: ['Keep your lower back gently pressed into the mat.', 'Pump your straight arms up and down a few centimetres.', 'Breathe in for five pumps and out for five pumps.', 'Continue for the set time, keeping your neck relaxed.'],
+      breath: 'In for five arm pumps, out for five; that is ten pumps per breath cycle.', rx: '1–2 rounds of 30–60 seconds', rest: '30 seconds',
+      mistakes: ['Straining the neck', 'Lower back arching off the mat', 'Pumping from the shoulders instead of long arms'], mod: 'Keep your feet flat on the floor and your head down on the mat.',
+      safety: 'Lower your head if your neck strains. Stop with back pain.',
+      cues: ['Back pressed down', 'Long arms', 'Five in, five out', 'Relax your neck'],
+      voiceSetup: 'Lie on your back with your knees bent above your hips. Lift your head and shoulders and reach your arms beside you. Pump your arms in small movements, breathing in for five pumps and out for five. For an easier version, keep your feet and head down.',
+      voiceStart: 'Arms long, five in, five out.', voiceBreathing: 'In for five pumps, out for five.', voiceFormCues: ['Back pressed down.', 'Relax your neck.', 'Small, quick pumps.'],
+      voiceTen: 'Ten seconds left. Keep breathing.', voiceFinish: 'Lower your head and rest.', repMode: 'timed', cameraView: 'side',
+      safetyShort: 'Head down if your neck strains.', checkpoints: ['Lower back in contact with the mat', 'Shoulder blades just off the mat', 'Arms straight, pumping from the shoulders'],
+      demoAudit: { replace: 'Optional', note: 'Torso is one segment, so the upper-back curl is shown as a small lift.' },
+      tags: T(['core'], 2)
+    },
+    toe_taps: {
+      name: 'Pilates toe taps', cat: 'Core', view: 'side', equip: 'Mat', props: MAT,
+      frames: [
+        mix(LIE, mix(TABLE, { aN: [90, 90], aF: [90, 90], hold: 0.3, move: 1.2 })), mix(LIE, { aN: [90, 90], aF: [90, 90], lN: [130, 40], lF: [181, 91], fN: 80, fF: 90, hold: 0.3, move: 1.2 }),
+        mix(LIE, mix(TABLE, { aN: [90, 90], aF: [90, 90], hold: 0.3, move: 1.2 })), mix(LIE, { aN: [90, 90], aF: [90, 90], lF: [130, 40], lN: [180, 90], fF: 80, fN: 90, hold: 0.3, move: 1.2 })
+      ], fin: 1,
+      tempo: { finish2: 3, phases: [{ label: 'Tap down', secs: 1.5, to: 'finish', breath: 'Exhale', dir: 'down' }, { label: 'Tap', secs: 0.3, to: null, breath: 'Hold' }, { label: 'Lift', secs: 1.5, to: 'start', breath: 'Inhale', dir: 'up' }] },
+      muscles: 'Lower abs, deep core', start: 'Lie on your back with your knees bent at 90° above your hips, arms by your sides.',
+      steps: ['Keep the knee bend fixed.', 'Lower one foot to tap the floor.', 'Bring it back to tabletop.', 'Alternate legs, keeping your back flat.'],
+      breath: 'Exhale as the foot lowers, inhale as it returns.', rx: '2 sets of 8–12 per side', rest: '30 seconds',
+      mistakes: ['Back arching as the leg lowers', 'Straightening the knee', 'Rushing'], mod: 'Tap only halfway down.',
+      safety: 'Keep your lower back on the mat; reduce the range if it lifts.',
+      cues: ['Back flat', 'Knee bend stays the same', 'Slow taps'],
+      voiceSetup: 'Lie on your back with your knees bent above your hips, arms by your sides. Keeping the knee bend the same, lower one foot to tap the floor, then bring it back. Alternate legs and keep your back flat.',
+      voiceStart: 'Tabletop legs, back flat.', voiceBreathing: 'Exhale as you tap.', voiceFormCues: ['Back flat.', 'Slow and controlled.', 'Same knee bend.'],
+      voiceLastTwo: 'Keep your back down.', repMode: 'guided', cameraView: 'side', unilateral: true,
+      sideInstructions: { first: 'Right foot first.', second: 'Now the left foot.' },
+      safetyShort: 'Reduce the range if your back lifts.', checkpoints: ['Lower back stays down', 'Knee angle stays about 90°', 'Movement from the hip'],
+      demoAudit: { replace: 'No', note: 'Alternating taps are clear.' },
+      tags: T(['core'], 1)
+    },
+    single_leg_stretch: {
+      name: 'Single-leg stretch', cat: 'Core', view: 'side', equip: 'Mat', props: MAT,
+      frames: [
+        mix(CURL, { aN: { ik: [112, 134], b: 1 }, aF: { ik: [110, 136], b: 1 }, lN: [-160, 100], lF: [120, 120], fN: 120, fF: 120, hold: 0.2, move: 1 }),
+        mix(CURL, { aN: { ik: [112, 134], b: 1 }, aF: { ik: [110, 136], b: 1 }, lF: [-160, 100], lN: [120, 120], fN: 120, fF: 120, hold: 0.2, move: 1 })
+      ], fin: 1,
+      tempo: { phases: [{ label: 'Switch', secs: 1.5, to: 'finish', breath: 'Exhale', dir: 'in' }, { label: 'Hold', secs: 0.3, to: null, breath: 'Hold' }, { label: 'Switch', secs: 1.5, to: 'start', breath: 'Inhale', dir: 'out' }] },
+      muscles: 'Abs, deep core, hip flexors; coordination', start: 'Lie on your back, head and shoulders lifted. Hug one knee in and reach the other leg long at about 45°.',
+      steps: ['Hold the bent knee with your hands.', 'Switch legs: draw the other knee in as you extend the first.', 'Keep your upper body lifted and still.', 'Continue switching with control.'],
+      breath: 'Exhale for two switches, inhale for two.', rx: '2 sets of 8–10 per side', rest: '30 seconds',
+      mistakes: ['Lower back arching', 'Dropping the head', 'Extended leg too low'], mod: 'Keep your head down, and extend the leg higher toward the ceiling.',
+      safety: 'Keep the extended leg high enough that your back stays flat. Stop if your neck strains.',
+      cues: ['Back flat', 'Switch with control', 'Shoulders lifted'],
+      voiceSetup: 'Lie on your back and lift your head and shoulders. Hug one knee in and reach the other leg long, angled up. Switch legs with control, keeping your back flat. Head down and leg higher makes it easier.',
+      voiceStart: 'One knee in, one leg long.', voiceBreathing: 'Exhale as you switch.', voiceFormCues: ['Back flat.', 'Leg higher if your back lifts.', 'Steady rhythm.'],
+      voiceLastTwo: 'Stay lifted.', repMode: 'guided', cameraView: 'side', unilateral: true,
+      sideInstructions: { first: 'Count each leg as you switch.', second: 'Keep switching.' },
+      safetyShort: 'Raise the long leg if your back arches.', checkpoints: ['Lower back stays down', 'Shoulders lifted, neck relaxed', 'Extended leg in line with the hip'],
+      demoAudit: { replace: 'No', note: 'Leg switch is clear.' },
+      tags: T(['core'], 2)
+    },
+    leg_circles: {
+      name: 'Single-leg circles', cat: 'Core', view: 'side', equip: 'Mat', props: MAT, sides: true,
+      frames: [
+        mix(LIE, { aN: [90, 90], aF: [90, 90], lN: [170, 170], lF: [90, 90], fN: 175, fF: 180, hold: 0, move: 0.9 }),
+        mix(LIE, { aN: [90, 90], aF: [90, 90], lN: [158, 158], lF: [90, 90], fN: 165, fF: 180, hold: 0, move: 0.9 }),
+        mix(LIE, { aN: [90, 90], aF: [90, 90], lN: [170, 170], lF: [90, 90], fN: 175, fF: 180, hold: 0, move: 0.9 }),
+        mix(LIE, { aN: [90, 90], aF: [90, 90], lN: [182, 182], lF: [90, 90], fN: 185, fF: 180, hold: 0, move: 0.9 })
+      ], fin: 2,
+      muscles: 'Hip flexors, deep core, hip mobility', start: 'Lie on your back, one leg extended toward the ceiling, the other long on the mat (or bent with the foot flat), arms by your sides.',
+      steps: ['Keep your hips still on the mat.', 'Draw small circles with the lifted leg.', 'Reverse the direction halfway.', 'Switch legs.'],
+      breath: 'Inhale for the first half of the circle, exhale for the second.', rx: '30–40 seconds per leg', rest: 'None',
+      mistakes: ['Hips rocking', 'Circles too big', 'Tense shoulders'], mod: 'Bend the lifted knee slightly and keep the circles small.',
+      safety: 'Keep the circles small enough that your hips stay still.',
+      cues: ['Hips still', 'Small circles', 'Relax your shoulders'],
+      voiceSetup: 'Lie on your back with one leg lifted toward the ceiling and the other long on the mat. Keeping your hips still, draw small circles with the lifted leg. We\u2019ll reverse direction, then switch legs.',
+      voiceStart: 'Leg up, hips still.', voiceBreathing: 'Breathe in and out with each circle.', voiceFormCues: ['Hips still.', 'Small circles.', 'Relax your shoulders.'],
+      voiceTen: 'Ten seconds left. Small circles.', voiceFinish: 'Lower your leg slowly.', repMode: 'timed', cameraView: 'side',
+      sideInstructions: { first: 'Right leg first.', second: 'Now the left leg.' },
+      safetyShort: 'Keep circles small; hips stay still.', checkpoints: ['Pelvis steady', 'Circle size controlled', 'Opposite leg relaxed'],
+      demoAudit: { replace: 'Recommended', note: 'Side view only shows the circle as a forward and back sweep.' },
+      tags: { type: ['pilates', 'mobility'], parts: ['core', 'legs'], level: 1, impact: 'low', equip: 'mat' }, unilateral: true
+    },
+    pilates_swimming: {
+      name: 'Pilates swimming', cat: 'Posture', view: 'side', equip: 'Mat', props: MAT,
+      frames: [
+        mix(PRONE, { t: 96, hd: 100, aN: [104, 104], aF: [96, 96], lN: [-95, -95], lF: [-99, -99], hold: 0, move: 0.45 }),
+        mix(PRONE, { t: 96, hd: 100, aN: [96, 96], aF: [104, 104], lN: [-99, -99], lF: [-95, -95], hold: 0, move: 0.45 })
+      ], fin: 1,
+      muscles: 'Back extensors, glutes, rear shoulders, deep core', start: 'Lie face down, arms reaching overhead, legs long. Lift your arms, chest and legs slightly off the mat.',
+      steps: ['Keep your belly drawn in and neck long.', 'Flutter opposite arm and leg up and down in small movements.', 'Keep the movements quick but controlled.', 'Lower and rest when the set ends.'],
+      breath: 'Inhale for four flutters, exhale for four.', rx: '2 rounds of 20–30 seconds', rest: '30 seconds',
+      mistakes: ['Cranking the neck up', 'Big, swinging movements', 'Holding the breath'], mod: 'Rest your chest on the mat and flutter only the legs, or only the arms.',
+      safety: 'Stop if your lower back pinches; keep the lift small.',
+      cues: ['Small flutters', 'Neck long', 'Belly drawn in'],
+      voiceSetup: 'Lie face down with your arms overhead and legs long. Lift your arms, chest and legs a little, then flutter opposite arm and leg in small, quick movements. Keep your neck long and your belly drawn in.',
+      voiceStart: 'Lift a little, small flutters.', voiceBreathing: 'In for four, out for four.', voiceFormCues: ['Neck long.', 'Small and quick.', 'Belly in.'],
+      voiceTen: 'Ten seconds left. Keep it small.', voiceFinish: 'Lower down and rest.', repMode: 'timed', cameraView: 'side',
+      safetyShort: 'Keep the lift small; stop if your back pinches.', checkpoints: ['Neck neutral', 'Small, controlled range', 'Glutes and core engaged'],
+      demoAudit: { replace: 'Optional', note: 'Near arm crosses the face in side view.' },
+      tags: { type: ['pilates', 'strength'], parts: ['back', 'glutes', 'core'], level: 2, impact: 'low', equip: 'mat' }
+    },
+    mermaid_stretch: {
+      name: 'Mermaid side stretch', cat: 'Cooldown', view: 'front', equip: 'Mat', props: MAT, sides: true,
+      frames: [
+        { hx: 130, hy: 170, t: 180, aN: { ik: [168, 182], b: -1 }, aF: [-20, -10], lN: { ik: [136, 180], b: 1 }, lF: { ik: [124, 180], b: -1 }, fN: 90, fF: -90, hold: 1, move: 2 },
+        { hx: 130, hy: 170, t: 158, hd: 152, aN: { ik: [168, 182], b: -1 }, aF: [155, 120], lN: { ik: [136, 180], b: 1 }, lF: { ik: [124, 180], b: -1 }, fN: 90, fF: -90, hold: 3, move: 2 }
+      ], fin: 1,
+      muscles: 'Obliques, side body, upper back (stretch)', start: 'Sit tall on your mat with your legs folded comfortably (or cross-legged). Place one hand on the floor beside you.',
+      steps: ['Raise the other arm overhead.', 'Reach up and over toward the supported side.', 'Keep both sitting bones heavy on the mat.', 'Hold and breathe, then switch sides.'],
+      breath: 'Breathe into your side ribs.', rx: '20–30 seconds per side', rest: 'None',
+      mistakes: ['Leaning forward instead of sideways', 'Lifting the hip off the mat', 'Shrugging'], mod: 'Sit on a folded blanket and reduce the bend.',
+      safety: 'A gentle side stretch only; never bounce.',
+      cues: ['Sit tall first', 'Reach up and over', 'Breathe into your ribs'],
+      voiceSetup: 'Sit tall on your mat with your legs folded comfortably and one hand on the floor beside you. Raise the other arm and reach up and over to the side, keeping both hips down. We\u2019ll switch sides halfway.',
+      voiceStart: 'Sit tall, reach up and over.', voiceBreathing: 'Breathe into your side ribs.', voiceFormCues: ['Hips heavy.', 'Lengthen, then bend.', 'Shoulders relaxed.'],
+      voiceTen: 'Ten seconds left. Keep breathing.', voiceFinish: 'Come back to centre slowly.', repMode: 'timed', cameraView: 'front',
+      sideInstructions: { first: 'Reach to the right first.', second: 'Now reach to the left.' },
+      safetyShort: 'Gentle stretch; never bounce.', checkpoints: ['Both hips on the mat', 'Side bend, not forward', 'Neck relaxed'],
+      demoAudit: { replace: 'Optional', note: 'Seated leg position is approximate.' },
+      tags: { type: ['pilates', 'stretch', 'mobility'], parts: ['core', 'back'], level: 1, impact: 'low', equip: 'mat' }, unilateral: true
+    },
+    teaser_modified: {
+      name: 'Pilates teaser (modified)', cat: 'Core', view: 'side', equip: 'Mat', props: MAT,
+      frames: [
+        { hx: 130, hy: 170, t: -152, hd: -160, aN: [112, 112], aF: [110, 110], lN: [135, 90], lF: [136, 91], fN: 135, fF: 135, hold: 1.3, move: 1.4 },
+        { hx: 130, hy: 170, t: -148, hd: -156, aN: [116, 116], aF: [114, 114], lN: [138, 92], lF: [139, 93], fN: 135, fF: 135, hold: 1.3, move: 1.4 }
+      ], fin: 1,
+      muscles: 'Abs, hip flexors, deep core, balance', start: 'Sit with knees bent and feet flat. Lean back a little and lift your feet so your shins are parallel to the floor, balancing just behind your sitting bones.',
+      steps: ['Reach your arms forward alongside your legs.', 'Keep your chest lifted and spine long.', 'Hold the balance while breathing.', 'Lower your feet to rest when the time is up.'],
+      breath: 'Steady breathing; don\u2019t hold your breath.', rx: '2–3 holds of 15–30 seconds', rest: '30 seconds',
+      mistakes: ['Rounding and collapsing the chest', 'Holding the breath', 'Gripping the neck'], mod: 'Keep your toes on the floor, or hold the backs of your thighs.',
+      safety: 'Stop if you feel lower-back pain. Progress to straight legs only when this feels steady.',
+      cues: ['Chest lifted', 'Long spine', 'Arms reach forward'],
+      voiceSetup: 'Sit with knees bent and feet flat. Lean back a little and lift your feet so your shins are level, balancing just behind your sitting bones. Reach your arms forward, keep your chest lifted, and breathe. Toes down makes it easier.',
+      voiceStart: 'Lean back, chest lifted.', voiceBreathing: 'Keep breathing.', voiceFormCues: ['Chest lifted.', 'Long spine.', 'Relax your neck.'],
+      voiceTen: 'Ten seconds left. Hold steady.', voiceFinish: 'Feet down and rest.', repMode: 'timed', cameraView: 'side',
+      safetyShort: 'Toes down if your back aches.', checkpoints: ['Balanced just behind the sitting bones', 'Chest lifted, spine long', 'Shins level'],
+      demoAudit: { replace: 'No', note: 'V-sit balance with bent knees is clear.' },
+      tags: T(['core'], 2)
+    },
+    spine_stretch_forward: {
+      name: 'Spine stretch forward', cat: 'Cooldown', view: 'side', equip: 'Mat', props: MAT,
+      frames: [mix(SEAT, { aN: [90, 90], aF: [88, 88], hold: 1, move: 2 }), mix(SEAT, { t: 148, hd: 140, aN: [72, 72], aF: [70, 70], hold: 2.5, move: 2 })], fin: 1,
+      muscles: 'Back and hamstrings (stretch); posture', start: 'Sit tall with your legs long and a little apart, feet flexed, arms reaching forward at shoulder height.',
+      steps: ['Sit up as tall as you can.', 'Breathe out and reach forward, bending from your hips.', 'Keep your arms parallel to the floor.', 'Breathe in and roll back up to tall sitting.'],
+      breath: 'Exhale as you reach forward, inhale as you sit tall.', rx: '30–45 seconds (slow repeats)', rest: 'None',
+      mistakes: ['Collapsing instead of lengthening', 'Locking the knees hard', 'Forcing the stretch'], mod: 'Bend your knees slightly or sit on a folded blanket.',
+      safety: 'Mild stretch only; never bounce.',
+      cues: ['Sit tall first', 'Reach forward', 'Soft knees if needed'],
+      voiceSetup: 'Sit tall with your legs long and a little apart, arms reaching forward. Breathe out and reach forward from your hips, then breathe in and sit back up tall. Bend your knees if your hamstrings feel tight.',
+      voiceStart: 'Sit tall, arms forward.', voiceBreathing: 'Exhale forward, inhale up.', voiceFormCues: ['Lengthen first.', 'Soft knees.', 'Slow and easy.'],
+      voiceTen: 'Ten seconds left. Keep breathing.', voiceFinish: 'Sit up slowly.', repMode: 'timed', cameraView: 'side',
+      safetyShort: 'Mild stretch; bend your knees if needed.', checkpoints: ['Hinge from the hips', 'Arms parallel to the floor', 'No bouncing'],
+      demoAudit: { replace: 'Optional', note: 'Spine rounding is shown as a torso tilt.' },
+      tags: { type: ['pilates', 'stretch', 'mobility'], parts: ['back', 'legs'], level: 1, impact: 'low', equip: 'mat' }
+    }
+  };
+  Object.keys(NEW).forEach(function (id) { if (!EX[id]) { NEW[id].media = MEDIA; EX[id] = NEW[id]; } });
+  // Existing Pilates-style moves also appear in Pilates workouts.
+  ['dead_bug', 'bird_dog', 'glute_bridge', 'glute_bridge_march', 'side_leg_raise', 'superman', 'forearm_plank', 'knee_plank', 'crunch'].forEach(function (id) {
+    if (EX[id] && EX[id].tags && EX[id].tags.type.indexOf('pilates') < 0) EX[id].tags.type.push('pilates');
+  });
+})();
+if (typeof module !== 'undefined') module.exports = EX;
+
 // ---------- 15-day plan ----------
 function W(ex, secs, o) { var r = { ex: ex, secs: secs }; for (var k in o) r[k] = o[k]; return r; }
 function S(ex, sets, reps, rest, o) { var r = { ex: ex, sets: sets, reps: reps, rest: rest }; for (var k in o) r[k] = o[k]; return r; }
@@ -1929,7 +2900,7 @@ function prepSecs(ex, st) {
 }
 // Returns [{block, kind, prep, countdown, active, confirm, rest, total}] for every step, in order.
 function estimateDay(day) {
-  var steps = buildSteps(day), out = [], prevKey = null;
+  var steps = buildSteps(day), out = [], prevKey = null, seen = {};
   steps.forEach(function (st, i) {
     var r = { block: st.block, kind: st.kind, ex: st.ex, prep: 0, countdown: 0, active: 0, confirm: 0, rest: 0 };
     if (st.kind === 'rest') r.rest = st.secs;
@@ -1939,7 +2910,13 @@ function estimateDay(day) {
       var key = st.block + '|' + st.ex + '|' + (st.kind === 'reps' ? 'r' : 't' + i);
       var isNew = key !== prevKey || st.kind === 'timed';
       prevKey = key;
-      if (isNew) { r.prep = prepSecs(ex, st); r.countdown = EST.COUNTDOWN; }
+      if (isNew) {
+        // v2 generated workouts: short intro for a move already introduced earlier in the workout
+        if (day.shortRepeatIntros && seen[st.ex]) r.prep = Math.max(3, ('Next: ' + ex.name + '. ' + (ex.voiceStart || '')).split(/\s+/).length / EST.WORDS_PER_SEC + EST.PREP_PAD);
+        else r.prep = prepSecs(ex, st);
+        r.countdown = EST.COUNTDOWN;
+      }
+      seen[st.ex] = true;
       if (st.kind === 'timed') { r.active = st.secs; if (st.test) r.confirm = EST.TEST_CONFIRM; }
       else {
         r.active = st.reps * (st.perSide ? 2 : 1) * tempoSecs(ex) + (st.perSide ? EST.SIDE_SWITCH : 0);
@@ -1963,6 +2940,357 @@ function estBreakdown(day) {
   return t;
 }
 if (typeof module !== 'undefined') module.exports = { DAYS: DAYS, buildSteps: buildSteps, estMinutes: estMinutes, blockMinutes: blockMinutes, stepSecs: stepSecs, stepSecsV1: stepSecsV1, estimateDay: estimateDay, estBreakdown: estBreakdown, EST: EST };
+
+// ======================================================================
+// v2.0 programs: workout builder, ready-made catalog, and N-day plan generator.
+// Generated workouts are plain "day" objects ({title, type, blocks}) so the existing
+// buildSteps() / estMinutes() / WorkoutEngine / Player handle them unchanged.
+// Everything is deterministic for a given seed, so a saved plan regenerates identically.
+// ======================================================================
+var PROGRAMS = (function () {
+  var GEN_VERSION = 1;
+  var LEVELS = { 1: 'Beginner', 2: 'Intermediate', 3: 'Expert' };
+  var GOALS = { weight_loss: 'Weight loss', tone: 'Tone & shape', strength: 'Build strength', stamina: 'Stamina', flexibility: 'Flexibility' };
+  var TYPES = { full: 'Full body', strength: 'Strength', cardio: 'Cardio', hiit: 'Cardio HIIT', core: 'Core & planks', pilates: 'Pilates', mobility: 'Stretch & mobility' };
+  var EQUIPMENT = { mat: 'Mat', chair: 'Chair', wall: 'Wall', band: 'Resistance band', dumbbells: '2 kg dumbbells' }; // bodyweight is always available
+  var ALL_EQUIP = Object.keys(EQUIPMENT);
+  var WEEKDAYS = [[1, 'Mon'], [2, 'Tue'], [3, 'Wed'], [4, 'Thu'], [5, 'Fri'], [6, 'Sat'], [0, 'Sun']];
+  var PARTS = { full: 'Full body', arms: 'Arms', chest: 'Chest', back: 'Back & posture', shoulders: 'Shoulders', core: 'Core & abs', legs: 'Legs', glutes: 'Glutes' };
+  var DURATIONS = [10, 20, 30, 45, 60];
+  var PLAN_LENGTHS = [7, 14, 21, 30];
+
+  // ---------- deterministic randomness ----------
+  function hash(str) { var h = 2166136261; for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  function rng(seed) { var a = hash(String(seed)); return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function shuffle(arr, r) { var a = arr.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+
+  // ---------- exercise pools ----------
+  function has(arr, x) { return arr && arr.indexOf(x) >= 0; }
+  function pool(o) {
+    // o: {types:[], parts:[], level, impact:'low'|'any', equip: {dumbbells:bool}}
+    return Object.keys(EX).filter(function (id) {
+      var t = EX[id].tags; if (!t) return false;
+      if (o.types && !o.types.some(function (x) { return has(t.type, x); })) return false;
+      if (o.parts && o.parts.length && !o.parts.some(function (x) { return has(t.parts, x); })) return false;
+      if (o.maxLevel && t.level > o.maxLevel) return false;
+      if (o.minLevel && t.level < o.minLevel) return false;
+      if (o.lowImpact && t.impact === 'high') return false;
+      if (o.noDumbbells && t.equip === 'dumbbells') return false;
+      if (o.equip && t.equip !== 'none' && o.equip.indexOf(t.equip) < 0) return false;
+      if (o.exclude && has(o.exclude, id)) return false;
+      return true;
+    });
+  }
+  // Prefer moves close to the chosen level, but keep easier ones available.
+  function rank(ids, level, r) {
+    return shuffle(ids, r).sort(function (a, b) { return Math.abs(EX[a].tags.level - level) - Math.abs(EX[b].tags.level - level); });
+  }
+
+  // ---------- prescriptions ----------
+  var RX = {
+    1: { sets: 2, reps: 10, uni: 8, rest: 45, hold: 20, cardio: 60, hiitWork: 30, hiitRest: 30 },
+    2: { sets: 3, reps: 12, uni: 10, rest: 40, hold: 30, cardio: 60, hiitWork: 40, hiitRest: 20 },
+    3: { sets: 3, reps: 15, uni: 12, rest: 30, hold: 45, cardio: 50, hiitWork: 45, hiitRest: 15 }
+  };
+  function W(ex, secs, o) { var r = { ex: ex, secs: secs }; for (var k in o) r[k] = o[k]; return r; }
+  function Sx(ex, sets, reps, rest, o) { var r = { ex: ex, sets: sets, reps: reps, rest: rest }; for (var k in o) r[k] = o[k]; return r; }
+  function strengthItem(id, level, goal, week) {
+    var rx = RX[level], e = EX[id], prog = Math.min(week || 0, 3);
+    if (e.repMode === 'timed') return W(id, rx.hold + prog * 5, { rest: rx.rest });
+    var sets = rx.sets, reps = e.unilateral ? rx.uni : rx.reps, rest = rx.rest;
+    if (goal === 'strength' && level > 1) { sets = 4; reps = Math.max(6, reps - 4); rest += 15; }
+    if (goal === 'tone') reps += 2;
+    if (goal === 'weight_loss' || goal === 'stamina') rest = Math.max(20, rest - 10);
+    reps += prog * (e.unilateral ? 1 : 2);
+    return Sx(id, sets, reps, rest, e.unilateral ? { perSide: true } : {});
+  }
+
+  // ---------- blocks ----------
+  var PART_ROTATION = ['legs', 'chest', 'back', 'core', 'glutes', 'shoulders', 'arms'];
+  function warmup(minutes, r, level, eq) {
+    var n = minutes <= 10 ? 2 : minutes <= 20 ? 3 : 4;
+    var ids = rank(pool({ types: ['warmup'], maxLevel: 1, lowImpact: true, exclude: ['deep_breathing'], equip: eq }), 1, r).slice(0, n);
+    if (ids.indexOf('march') < 0) ids[0] = 'march';
+    return { name: 'Warm-up', items: ids.map(function (id) { return W(id, minutes <= 10 ? 40 : 50); }) };
+  }
+  function cooldown(minutes, r, parts, eq) {
+    var n = minutes <= 10 ? 2 : minutes <= 30 ? 3 : 4;
+    var ids = rank(pool({ types: ['stretch'], parts: parts && parts.indexOf('full') < 0 ? parts : null, equip: eq }), 1, r);
+    if (ids.length < n) ids = ids.concat(rank(pool({ types: ['stretch'], equip: eq }), 1, r).filter(function (x) { return ids.indexOf(x) < 0; }));
+    ids = ids.filter(function (x) { return x !== 'deep_breathing'; }).slice(0, n - 1).concat(['deep_breathing']);
+    return { name: 'Cooldown', items: ids.map(function (id) { return W(id, EX[id].sides || EX[id].unilateral ? 50 : 40); }) };
+  }
+
+  // Build the main block(s) and grow them until the estimate reaches the target.
+  function fill(day, target, addOne) {
+    var guard = 0;
+    while (estMinutes(day) < target * 0.93 && guard++ < 40) { if (!addOne()) break; }
+    return day;
+  }
+
+  function buildWorkout(o) {
+    // o: {type, part, level, minutes, goal, seed, week, noDumbbells, title}
+    var level = o.level || 1, goal = o.goal || 'tone', type = o.type || 'full';
+    var minutes = o.minutes || defaultMinutes(level, goal);
+    var selParts = (o.parts && o.parts.length ? o.parts : (o.part && o.part !== 'full' ? [o.part] : [])).filter(function (x) { return x !== 'full'; });
+    var eq = o.equip || null;
+    var r = rng((o.seed || '') + '|' + type + '|' + selParts.join(',') + '|' + level + '|' + minutes + '|' + goal + '|' + (eq ? eq.join(',') : '') + '|' + GEN_VERSION);
+    var lowImpact = level === 1 || !!o.lowImpact, week = o.week || 0, rx = RX[level];
+    var parts = type === 'full' ? ['full'] : selParts.length ? selParts : null;
+    var day = { type: type === 'cardio' || type === 'hiit' ? 'cardio' : type === 'mobility' ? 'recovery' : 'strength', shortRepeatIntros: true, blocks: [], generated: true };
+    var PO = function (x) { x.equip = eq; return x; }; // equipment-aware pool options
+    day.blocks.push(warmup(minutes, r, level, eq));
+    var main = { name: TYPES[type] || 'Workout', items: [] }; day.blocks.push(main);
+    var cool = cooldown(minutes, r, parts, eq); day.blocks.push(cool);
+    var used = {};
+
+    if (type === 'strength' || type === 'full' || type === 'core' || type === 'pilates') {
+      var types = type === 'core' ? ['core'] : type === 'pilates' ? ['pilates'] : ['strength', 'core'];
+      var pp = type === 'core' ? ['core'] : type === 'pilates' ? (selParts.length ? selParts : null) : (selParts.length ? selParts : null);
+      var candidates = rank(pool(PO({ types: types, parts: pp, maxLevel: level, lowImpact: lowImpact, noDumbbells: o.noDumbbells })), level, r);
+      if (type === 'pilates' && candidates.length < 4) candidates = rank(pool(PO({ types: ['pilates'], maxLevel: level, lowImpact: lowImpact })), level, r);
+      if (((type === 'full' || !pp) && type !== 'pilates') || selParts.length > 1) { // balanced: rotate through body parts
+        var byPart = (selParts.length ? selParts : PART_ROTATION).map(function (p) { return candidates.filter(function (id) { return has(EX[id].tags.parts, p); }); });
+        var ordered = [], k = 0;
+        while (ordered.length < candidates.length && k < 60) { var list = byPart[k % byPart.length]; var nxt = list.find(function (id) { return ordered.indexOf(id) < 0; }); if (nxt) ordered.push(nxt); k++; }
+        candidates = ordered.concat(candidates.filter(function (id) { return ordered.indexOf(id) < 0; }));
+      }
+      var ci = 0;
+      var finisher = (goal === 'weight_loss' || goal === 'stamina') && minutes >= 30;
+      var target = finisher ? minutes - 6 : minutes;
+      fill(day, target, function () {
+        if (ci < candidates.length) { var id = candidates[ci++]; used[id] = 1; main.items.push(strengthItem(id, level, goal, week)); return true; }
+        // out of new moves: add a set to the first exercises (round-robin)
+        var reps = main.items.filter(function (it) { return it.sets && it.sets < 5; });
+        if (!reps.length) return false; reps[(ci++) % reps.length].sets++; return true;
+      });
+      if (finisher) {
+        var cards = rank(pool(PO({ types: ['cardio'], maxLevel: level, lowImpact: lowImpact, exclude: ['brisk_walk', 'dance'] })), level, r).slice(0, 3);
+        day.blocks.splice(2, 0, { name: 'Cardio finisher', items: cards.map(function (id) { return W(id, rx.hiitWork, { rest: rx.hiitRest }); }) });
+      }
+    } else if (type === 'cardio') {
+      var cids = rank(pool(PO({ types: ['cardio'], maxLevel: level, lowImpact: lowImpact })), level, r);
+      var round = 0, idx = 0;
+      fill(day, minutes, function () {
+        var id = cids[idx % cids.length]; idx++;
+        if (idx % cids.length === 0) round++;
+        main.items.push(W(id, rx.cardio, level === 1 ? {} : { rest: 15 }));
+        return true;
+      });
+    } else if (type === 'hiit') {
+      var hids = rank(pool(PO({ types: ['hiit', 'cardio'], maxLevel: level, lowImpact: lowImpact, exclude: ['brisk_walk', 'dance', 'side_steps'] })), level, r);
+      var sids = rank(pool(PO({ types: ['strength'], parts: selParts.length ? selParts : ['legs', 'chest', 'core', 'glutes'], maxLevel: level, lowImpact: true, noDumbbells: true })), level, r)
+        .filter(function (id) { return EX[id].repMode !== 'timed' && !EX[id].unilateral && !/band|chair_dips|crunch|dead_bug|superman|calf_raise|glute_bridge|prone|db_/.test(id); });
+      var circuit = [];
+      for (var i = 0; i < 6; i++) circuit.push(i % 2 === 0 ? hids[(i / 2) % hids.length] : sids[((i - 1) / 2) % Math.max(1, sids.length)] || hids[i % hids.length]);
+      var j = 0, rounds = 0;
+      fill(day, minutes, function () {
+        main.items.push(W(circuit[j % circuit.length], rx.hiitWork, { rest: rx.hiitRest, round: (Math.floor(j / circuit.length) + 1) + '' }));
+        j++; return true;
+      });
+      main.name = 'HIIT circuit (' + rx.hiitWork + ' s work, ' + rx.hiitRest + ' s rest)';
+    } else if (type === 'mobility') {
+      var mids = rank(pool({ types: ['mobility', 'stretch'], exclude: ['deep_breathing'], equip: eq }), 1, r);
+      var m = 0;
+      fill(day, minutes, function () { if (m >= mids.length * 2) return false; var id = mids[m % mids.length]; m++; main.items.push(W(id, EX[id].sides || EX[id].unilateral ? 60 : 45)); return true; });
+    }
+    // trim: never go far above the requested time
+    var guard2 = 0;
+    while (estMinutes(day) > minutes * 1.12 && guard2++ < 30) {
+      var lastIt = main.items[main.items.length - 1];
+      if (lastIt && lastIt.sets > 1) lastIt.sets--;
+      else if (main.items.length > 1) main.items.pop();
+      else break;
+    }
+    day.title = o.title || autoTitle(type, selParts, level, minutes);
+    day.meta = { type: type, part: selParts[0] || null, parts: selParts, level: level, minutes: minutes, goal: goal, autoMinutes: !o.minutes };
+    return day;
+  }
+  function autoTitle(type, parts, level, minutes) {
+    if (typeof parts === 'string') parts = parts === 'full' ? [] : [parts];
+    parts = parts || [];
+    var pn = parts.map(function (x) { return PARTS[x]; });
+    var label = pn.length > 2 ? pn.slice(0, 2).join(', ') + ' +' + (pn.length - 2) : pn.join(' & ');
+    var name = (type === 'strength' || type === 'pilates') && pn.length ? label + ' ' + (type === 'pilates' ? 'Pilates' : 'strength') : TYPES[type];
+    return name + ', ' + LEVELS[level].toLowerCase() + ', ' + minutes + ' min';
+  }
+
+  // ---------- ready-made catalog (inspired by common home-workout app categories) ----------
+  function P(id, name, type, part, level, minutes, goal, blurb) { return { id: id, name: name, type: type, part: part, level: level, minutes: minutes, goal: goal, blurb: blurb }; }
+  var CATALOG = [
+    P('fb-b-20', 'Full Body Starter', 'full', 'full', 1, 20, 'tone', 'Gentle total-body session with chair and wall support.'),
+    P('fb-b-30', 'Full Body Tone', 'full', 'full', 1, 30, 'tone', 'Every major muscle group, beginner-friendly.'),
+    P('fb-i-30', 'Full Body Burn', 'full', 'full', 2, 30, 'weight_loss', 'Strength circuit with a cardio finisher.'),
+    P('fb-i-45', 'Total Body Strength', 'full', 'full', 2, 45, 'strength', 'More sets, steady rests, solid form.'),
+    P('fb-e-45', 'Full Body Challenge', 'full', 'full', 3, 45, 'strength', 'Push-ups, lunges and planks for experienced movers.'),
+    P('fb-e-60', 'Full Body Power Hour', 'full', 'full', 3, 60, 'weight_loss', 'Long strength session plus finisher.'),
+    P('ab-b-10', 'Plank Basics', 'core', 'core', 1, 10, 'tone', 'Incline and knee planks, dead bugs, crunches.'),
+    P('ab-i-20', 'Core & Planks', 'core', 'core', 2, 20, 'tone', 'Forearm planks, shoulder taps and more.'),
+    P('ab-e-20', 'Plank Power', 'core', 'core', 3, 20, 'strength', 'Side planks, mountain climbers, long holds.'),
+    P('arm-b-20', 'Toned Arms', 'strength', 'arms', 1, 20, 'tone', 'Band curls, kickbacks and push-up progressions.'),
+    P('arm-i-30', 'Arms & Shoulders', 'strength', 'arms', 2, 30, 'tone', 'Dips, presses and curls for definition.'),
+    P('chest-b-20', 'Chest Builder', 'strength', 'chest', 1, 20, 'strength', 'Wall, incline and band presses.'),
+    P('back-b-20', 'Posture Fix', 'strength', 'back', 1, 20, 'tone', 'Rows, pull-aparts and Y raises for an upright posture.'),
+    P('sh-i-20', 'Shoulder Sculpt', 'strength', 'shoulders', 2, 20, 'tone', 'Presses, raises and posture work.'),
+    P('leg-b-20', 'Legs Starter', 'strength', 'legs', 1, 20, 'tone', 'Squats, bridges and calf raises.'),
+    P('leg-i-30', 'Lower Body Tone', 'strength', 'legs', 2, 30, 'tone', 'Lunges, split squats and wall sits.'),
+    P('glute-b-20', 'Glute Focus', 'strength', 'glutes', 1, 20, 'tone', 'Bridges, donkey kicks, side leg raises.'),
+    P('glute-i-30', 'Glutes & Thighs', 'strength', 'glutes', 2, 30, 'tone', 'Bridge marches, lunges, Romanian deadlifts.'),
+    P('car-b-20', 'Low-Impact Cardio', 'cardio', 'full', 1, 20, 'weight_loss', 'No jumping; apartment-friendly.'),
+    P('car-b-30', 'Walk & Dance Cardio', 'cardio', 'full', 1, 30, 'stamina', 'Steady, fun, low impact.'),
+    P('car-i-30', 'Cardio Blast', 'cardio', 'full', 2, 30, 'weight_loss', 'High knees, butt kicks and more.'),
+    P('hiit-b-20', 'Beginner HIIT (No Jumping)', 'hiit', 'full', 1, 20, 'weight_loss', '30 s work, 30 s rest, low impact.'),
+    P('hiit-i-20', 'HIIT Fat Burn', 'hiit', 'full', 2, 20, 'weight_loss', '40 s on, 20 s off.'),
+    P('hiit-e-30', 'Expert HIIT', 'hiit', 'full', 3, 30, 'stamina', '45 s on, 15 s off, jumps included.'),
+    P('pil-b-20', 'Pilates Basics', 'pilates', 'full', 1, 20, 'tone', 'Toe taps, leg circles, bridges and gentle core work.'),
+    P('pil-b-15', 'Pilates for Posture', 'pilates', 'back', 1, 15, 'flexibility', 'Swimming, bird dogs and spine stretches.'),
+    P('pil-i-30', 'Pilates Core', 'pilates', 'core', 2, 30, 'tone', 'The hundred, single-leg stretch and planks.'),
+    P('pil-e-30', 'Pilates Sculpt', 'pilates', 'full', 3, 30, 'strength', 'Teaser holds, swimming and longer sets.'),
+    P('mob-b-10', 'Morning Mobility', 'mobility', 'full', 1, 10, 'flexibility', 'Wake up the joints in 10 minutes.'),
+    P('mob-b-20', 'Stretch & Relax', 'mobility', 'full', 1, 20, 'flexibility', 'Long, calm stretches for recovery days.')
+  ];
+  var _cache = {};
+  function catalogWorkout(id, opts) {
+    opts = opts || {};
+    var key = id + '|' + (opts.equip ? opts.equip.slice().sort().join(',') : 'all') + '|' + (opts.lowImpact ? 'li' : '');
+    if (_cache[key]) return _cache[key];
+    var c = CATALOG.find(function (x) { return x.id === id; }); if (!c) return null;
+    var w = buildWorkout({ type: c.type, part: c.part, level: c.level, minutes: c.minutes, goal: c.goal, seed: 'catalog-' + c.id, title: c.name, equip: opts.equip, lowImpact: opts.lowImpact });
+    w.catalogId = c.id; w.blurb = c.blurb; _cache[key] = w; return w;
+  }
+
+  // ---------- automatic workout length (used when the user doesn't choose one) ----------
+  var AUTO_MIN = { 1: { weight_loss: 30, tone: 20, strength: 20, stamina: 20, flexibility: 20 }, 2: { weight_loss: 45, tone: 30, strength: 30, stamina: 30, flexibility: 20 }, 3: { weight_loss: 45, tone: 45, strength: 45, stamina: 45, flexibility: 30 } };
+  function defaultMinutes(level, goal) { return (AUTO_MIN[level || 1] || AUTO_MIN[1])[goal || 'tone'] || 20; }
+
+  // ---------- fitness quiz: answers -> starting level ----------
+  var QUIZ = [
+    { id: 'freq', q: 'How often have you exercised in the last three months?', a: [['Rarely or never', 0], ['1–2 times a week', 1], ['3 or more times a week', 2]] },
+    { id: 'pushup', q: 'How many push-ups can you do with good form?', a: [['None yet, or only against a wall', 0], ['A few on my knees', 1], ['5 or more full push-ups', 2]] },
+    { id: 'plank', q: 'How long can you hold a forearm plank?', a: [['I can\u2019t yet, or under 10 seconds', 0], ['10–30 seconds', 1], ['More than 30 seconds', 2]] },
+    { id: 'squat', q: 'How many bodyweight squats can you do in a row?', a: [['Fewer than 10', 0], ['10–20', 1], ['More than 20', 2]] },
+    { id: 'cardio', q: 'Can you march or jog for 10 minutes without stopping?', a: [['No, I need breaks', 0], ['Yes, marching or brisk walking', 1], ['Yes, jogging or jumping moves', 2]] },
+    { id: 'joints', q: 'Do you have joint pain, a recent injury, or a doctor\u2019s advice to avoid jumping?', a: [['No', 0], ['Yes', 1]] }
+  ];
+  function assessLevel(answers) {
+    var score = 0, n = 0;
+    QUIZ.forEach(function (qq) { if (qq.id !== 'joints' && answers[qq.id] != null) { score += answers[qq.id]; n++; } });
+    var level = score >= 8 ? 3 : score >= 4 ? 2 : 1;
+    var lowImpact = answers.joints === 1;
+    if (lowImpact && level > 2) level = 2; // with joint concerns, start no higher than intermediate
+    var why = level === 1 ? 'Beginner: start with supported, low-impact moves and build a habit.' : level === 2 ? 'Intermediate: you have a base; add sets, longer holds and some impact.' : 'Expert: ready for harder variations, jumps and shorter rests.';
+    return { level: level, score: score, max: n * 2, lowImpact: lowImpact, why: why };
+  }
+
+  // ---------- automatic level adjustment from past workouts ----------
+  // history entries (newest first): {level, rating:'easy'|'right'|'hard', completion:0..1, skipped}
+  function suggestLevel(history, level) {
+    var h = (history || []).filter(function (x) { return x.level === level && x.adaptive; });
+    var last = function (n) { return h.slice(0, n); };
+    var ratedHard = function (xs) { return xs.filter(function (x) { return x.rating === 'hard'; }).length; };
+    if (level > 1) {
+      var l2 = last(2), l3 = last(3);
+      if (l2.length === 2 && ratedHard(l2) === 2) return { to: level - 1, reason: 'Your last two workouts felt too hard.' };
+      if (l3.length === 3 && l3.every(function (x) { return x.completion < 0.7 || x.skipped >= 3; })) return { to: level - 1, reason: 'You completed less than 70% of your last three workouts.' };
+    }
+    if (level < 3) {
+      var e3 = last(3), e5 = last(5);
+      if (e3.length === 3 && e3.every(function (x) { return x.rating === 'easy'; })) return { to: level + 1, reason: 'Your last three workouts felt too easy.' };
+      if (e5.length === 5 && !ratedHard(e5) && e5.every(function (x) { return x.completion >= 0.95 && !x.skipped; })) return { to: level + 1, reason: 'You completed your last five workouts in full without any feeling too hard.' };
+    }
+    return null;
+  }
+
+  // ---------- N-day plans ----------
+  // Default workout types per goal (used when the user doesn't pick types).
+  var GOAL_TYPES = {
+    weight_loss: ['full', 'cardio', 'strength', 'hiit', 'mobility'], tone: ['strength', 'cardio', 'core', 'full', 'pilates', 'mobility'],
+    strength: ['strength', 'full', 'core', 'mobility'], stamina: ['cardio', 'hiit', 'full', 'core', 'mobility'], flexibility: ['mobility', 'pilates', 'full', 'cardio']
+  };
+  // Parse 'YYYY-MM-DD' as a local date without relying on the browser's string parser.
+  function parseDate(s) { if (!s) return null; var x = String(s).split('-'); var d = new Date(+x[0], (+x[1] || 1) - 1, +x[2] || 1); return isNaN(d.getTime()) ? null : d; }
+  function iso(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function planDays(params) {
+    // params: {id, days, goal, level, minutes|null, parts[], types[], weekdays[], equip[], start 'YYYY-MM-DD', lowImpact, noDumbbells}
+    var out = [], level = params.level || 1, goal = params.goal || 'tone';
+    var minutes = params.minutes || defaultMinutes(level, goal);
+    var types = params.types && params.types.length ? params.types.slice() : (GOAL_TYPES[goal] || GOAL_TYPES.tone).slice();
+    var parts = (params.parts || []).filter(function (x) { return x !== 'full'; });
+    var weekdays = params.weekdays && params.weekdays.length ? params.weekdays : [0, 1, 2, 3, 4, 5, 6];
+    var start = parseDate(params.start);
+    var trainIdx = [];
+    for (var i = 0; i < params.days; i++) {
+      var dow = start ? new Date(start.getFullYear(), start.getMonth(), start.getDate() + i).getDay() : (1 + i) % 7;
+      if (weekdays.indexOf(dow) >= 0) trainIdx.push(i);
+    }
+    var perWeek = weekdays.length;
+    // Rotation: training types in order; with 6–7 training days a week, keep one recovery (mobility) slot.
+    var rot = types.filter(function (t) { return t !== 'mobility'; });
+    if (!rot.length) rot = ['mobility'];
+    var needRecovery = types.indexOf('mobility') >= 0 || perWeek >= 6;
+    var strengthParts = parts.length ? parts : ['legs', 'arms', 'core', 'glutes', 'back', 'chest', 'shoulders'];
+    function isRecovery(d) {
+      if (!needRecovery || perWeek < 3) return false;
+      var w = Math.floor(d / 7), inWeek = trainIdx.filter(function (x) { return Math.floor(x / 7) === w; });
+      return inWeek.length >= Math.min(perWeek, 7) && inWeek.indexOf(d) === inWeek.length - 1;
+    }
+    var finalIdx = -1;
+    if (params.days >= 7) for (var f = trainIdx.length - 1; f >= 0; f--) { if (!isRecovery(trainIdx[f])) { finalIdx = trainIdx[f]; break; } }
+    var tCount = 0, sCount = 0;
+    for (var d = 0; d < params.days; d++) {
+      var date = start ? new Date(start.getFullYear(), start.getMonth(), start.getDate() + d) : null;
+      var w = Math.floor(d / 7);
+      if (trainIdx.indexOf(d) < 0) {
+        out.push({ n: d + 1, rest: true, type: 'rest', title: 'Rest day', week: w + 1, date: date ? iso(date) : null, blocks: [] });
+        continue;
+      }
+      var k = tCount++, posInWeek = trainIdx.filter(function (x) { return Math.floor(x / 7) === w; }).indexOf(d);
+      var type, part = null, partsForDay = null;
+      if (isRecovery(d)) type = 'mobility';
+      else type = rot[k % rot.length];
+      if (d === finalIdx) { type = 'full'; }
+      if (type === 'pilates') { if (parts.length) partsForDay = parts; }
+      else if (type === 'strength') {
+        if (parts.length) partsForDay = parts.length <= 2 ? parts : [parts[sCount % parts.length], parts[(sCount + 1) % parts.length]];
+        else partsForDay = [strengthParts[sCount % strengthParts.length]];
+        sCount++;
+      }
+      if (type === 'full' && parts.length) partsForDay = parts; // focus areas get extra work on full-body days
+      var mins = type === 'mobility' ? Math.min(minutes, 20) : minutes;
+      var day = buildWorkout({ type: type, parts: partsForDay, level: level, minutes: mins, goal: goal, week: w, seed: params.id + '-d' + (d + 1), equip: params.equip, lowImpact: params.lowImpact, noDumbbells: params.noDumbbells });
+      day.n = d + 1; day.week = w + 1; day.date = date ? iso(date) : null;
+      day.title = (d === finalIdx ? 'Final challenge: ' : '') + (type === 'mobility' ? 'Recovery: stretch & mobility' : autoTitle(type, partsForDay, level, mins).split(',')[0]);
+      out.push(day);
+    }
+    return out;
+  }
+  var _planCache = {};
+  function planDaysCached(params) {
+    var key = JSON.stringify(params);
+    if (!_planCache[key]) _planCache[key] = planDays(params);
+    return _planCache[key];
+  }
+  function newPlanParams(o) {
+    return {
+      id: 'p' + Date.now().toString(36), days: o.days, goal: o.goal, level: o.level, minutes: o.minutes || null,
+      parts: o.parts || [], types: o.types || [], weekdays: o.weekdays || [], equip: o.equip || null,
+      start: o.start || iso(new Date()), lowImpact: !!o.lowImpact, noDumbbells: !!o.noDumbbells, gen: GEN_VERSION
+    };
+  }
+  function planName(p) {
+    var parts = (p.parts || []).filter(function (x) { return x !== 'full'; }).map(function (x) { return PARTS[x].toLowerCase(); });
+    return p.days + '-day ' + GOALS[p.goal].toLowerCase() + (parts.length ? ' (' + parts.join(', ') + ')' : '') + ' plan, ' + LEVELS[p.level].toLowerCase();
+  }
+  function trainingDays(days) { return days.filter(function (d) { return !d.rest; }); }
+
+  return {
+    LEVELS: LEVELS, GOALS: GOALS, TYPES: TYPES, PARTS: PARTS, DURATIONS: DURATIONS, PLAN_LENGTHS: PLAN_LENGTHS,
+    CATALOG: CATALOG, buildWorkout: buildWorkout, catalogWorkout: catalogWorkout, planDays: planDaysCached, newPlanParams: newPlanParams, planName: planName, pool: pool, GEN_VERSION: GEN_VERSION,
+    EQUIPMENT: EQUIPMENT, ALL_EQUIP: ALL_EQUIP, WEEKDAYS: WEEKDAYS, GOAL_TYPES: GOAL_TYPES, QUIZ: QUIZ, assessLevel: assessLevel, suggestLevel: suggestLevel,
+    defaultMinutes: defaultMinutes, trainingDays: trainingDays, parseDate: parseDate
+  };
+})();
+if (typeof module !== 'undefined') module.exports = PROGRAMS;
 
 // ---------- Voice coaching manager (v1.1) ----------
 // Priority (lower number = more important):
@@ -2006,13 +3334,22 @@ var VoiceCoach = (function () {
       onCaption: null
     };
 
+    // v2: accent preference. 'en-IN' (default) prefers an English (India) voice when the device has one.
+    var FEMALE = /female|veena|heera|kalpana|lekha|aditi|raveena|neerja|zira|samantha|karen|moira|google uk english female/i;
     function pickVoice() {
       if (!synth || !synth.getVoices) return null;
       var vs = synth.getVoices() || [];
       if (V.voiceURI) { var m = vs.find(function (v) { return v.voiceURI === V.voiceURI; }); if (m) return m; }
-      return vs.find(function (v) { return /^en[-_](IN|GB|US|AU)/i.test(v.lang) && /female|zira|samantha|veena|heera|google uk english female|karen|moira/i.test(v.name); }) ||
+      if (V.accent === 'en-IN') {
+        var ind = vs.filter(function (v) { return /^en[-_]IN/i.test(v.lang); });
+        if (ind.length) return ind.find(function (v) { return FEMALE.test(v.name); }) || ind[0];
+      }
+      return vs.find(function (v) { return /^en[-_](IN|GB|US|AU)/i.test(v.lang) && FEMALE.test(v.name); }) ||
         vs.find(function (v) { return /^en/i.test(v.lang); }) || null;
     }
+    V.accent = 'en-IN';
+    V.setAccent = function (a) { V.accent = a || 'en-IN'; };
+    V.currentVoice = function () { var v = pickVoice(); return v ? { name: v.name, lang: v.lang } : null; };
 
     function finish(item, reason) {
       if (!item || item.finished) return;
@@ -2123,7 +3460,8 @@ var VoiceCoach = (function () {
     // Diagnostics for the settings screen.
     V.status = function () {
       var n = 0; try { n = synth && synth.getVoices ? (synth.getVoices() || []).length : 0; } catch (e) { }
-      return { supported: V.supported, voices: n, enabled: V.enabled };
+      var indian = 0; try { indian = synth && synth.getVoices ? (synth.getVoices() || []).filter(function (x) { return /^en[-_]IN/i.test(x.lang); }).length : 0; } catch (e) { }
+      return { supported: V.supported, voices: n, enabled: V.enabled, indianVoices: indian, accent: V.accent, current: V.currentVoice() };
     };
     V.estimateMs = estimateMs;
     return V;
@@ -2157,6 +3495,8 @@ var WorkoutEngine = (function () {
     this.onCue = o.onCue || function () { };      // sound hooks: 'tick', 'go', 'done', 'switch'
     this.onTest = o.onTest || function () { };    // (testKey, value)
     this.settings = o.settings || {};              // { repMode: 'guided'|'manual', tempoScale: 1 }
+    this.shortRepeats = !!o.shortRepeats;          // v2: short intro for moves already introduced this workout (opt-in)
+    this._seen = {};
     this.events = [];                              // every coaching event that fired (for UI + tests)
     this._fired = {};
     this._buildMeta();
@@ -2228,11 +3568,19 @@ var WorkoutEngine = (function () {
     this._newEntry();
     this.s.reps = null; this.s.confirm = null; this.s.rest = null;
     if (o.direct) { this.enterActive(); return; }
-    this.enterPrep(o.full != null ? o.full : this.meta[i].newEx);
+    var full = o.full != null ? o.full : this.meta[i].newEx;
+    var exId = this.steps[i].ex, repeat = false;
+    if (full && this.shortRepeats && this._seen[exId] && o.full == null) { full = false; repeat = true; }
+    this._seen[exId] = true;
+    this.enterPrep(full, repeat);
   };
 
-  Engine.prototype.prepText = function (full) {
+  Engine.prototype.prepText = function (full, repeat) {
     var st = this.step(), ex = this.ex();
+    if (!full && (repeat || st.kind === 'timed')) {
+      var setTxt = st.kind === 'reps' ? ' Set ' + num(st.set).toLowerCase() + ' of ' + num(st.sets).toLowerCase() + ', ' + st.reps + ' reps' + (st.perSide ? ' each side' : '') + '.' : '';
+      return 'Next: ' + ex.name + '.' + setTxt + ' ' + (ex.voiceStart || '');
+    }
     if (st.kind === 'timed' && st.test) {
       return 'Fitness test: ' + ex.name + '. ' + (ex.voiceSetup || ex.start) + ' Do as many good reps as you can in ' + st.secs + ' seconds, and count them.';
     }
@@ -2241,9 +3589,9 @@ var WorkoutEngine = (function () {
     return 'Set ' + num(st.set).toLowerCase() + ' of ' + num(st.sets).toLowerCase() + ', ' + st.reps + ' reps' + sideTxt + '. ' + (ex.voiceStart || '');
   };
 
-  Engine.prototype.enterPrep = function (full) {
+  Engine.prototype.enterPrep = function (full, repeat) {
     this._setPhase('preparing');
-    var text = this.prepText(full);
+    var text = this.prepText(full, repeat);
     var rate = (this.voice && this.voice.rate) || 1;
     var est = VoiceCoach.estimateMs(text, rate);
     var voiceOn = !!(this.voice && this.voice.enabled && this.voice.supported);
@@ -2746,6 +4094,7 @@ if (typeof module !== 'undefined') module.exports = WorkoutEngine;
     chart: function () { return I(html`<path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/>`); },
     bolt: function () { return I(html`<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>`); },
     swap: function () { return I(html`<path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/>`); },
+    bolt2: function () { return I(html`<path d="M3 12h3l3-7 4 14 3-7h5"/>`); },
     eye: function () { return I(html`<path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>`); }
   };
 
@@ -2769,9 +4118,11 @@ if (typeof module !== 'undefined') module.exports = WorkoutEngine;
   function freshState() {
     return { v: 1, updatedAt: 0, safetyOk: false, voice: true, ghosts: true, done: {}, session: null,
       measures: { start: { weight: '81', bust: '36', arm: '', waist: '' }, end: { weight: '', bust: '', arm: '', waist: '' } },
-      bustConfirmed: false, tests: { start: {}, end: {} } };
+      bustConfirmed: false, tests: { start: {}, end: {} }, plans: {}, activePlan: 'core15', history: [], quick: null, profile: null };
   }
-  function loadLocal() { try { var s = JSON.parse(localStorage.getItem(KEY)); return s && s.v === 1 ? s : null; } catch (e) { return null; } }
+  // v2: add plan/history fields to any saved state without touching existing data.
+  function normalize(s) { if (!s) return s; if (!s.plans) s.plans = {}; if (!s.history) s.history = []; if (!s.activePlan) s.activePlan = 'core15'; if (s.quick === undefined) s.quick = null; if (s.profile === undefined) s.profile = null; return s; }
+  function loadLocal() { try { var s = JSON.parse(localStorage.getItem(KEY)); return s && s.v === 1 ? normalize(s) : null; } catch (e) { return null; } }
   function saveLocal(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) { } }
   // v1.2: free, database-less portability — a JSON backup file the user keeps.
   function downloadBackup(st) {
@@ -2791,7 +4142,7 @@ if (typeof module !== 'undefined') module.exports = WorkoutEngine;
         var d = JSON.parse(r.result), s = d && d.state;
         if (!s || s.v !== 1 || typeof s.done !== 'object' || !s.measures) throw new Error('bad');
         if (!confirm('Replace the progress on this device with the backup from ' + (d.exported || 'the file').slice(0, 10) + '?')) return;
-        s.updatedAt = Date.now(); onImport(s); alert('Backup restored.');
+        s.updatedAt = Date.now(); onImport(normalize(s)); alert('Backup restored.');
       } catch (e) { alert('That file is not a Home Coach backup.'); }
     };
     r.readAsText(file);
@@ -3021,6 +4372,7 @@ if (typeof module !== 'undefined') module.exports = WorkoutEngine;
       <div className="how">
         <h1>${ex.name}</h1>
         <p className="muscles">${ex.muscles}</p>
+        ${ex.tags && html`<p className="tagline">${levelBadge(ex.tags.level)} ${ex.tags.parts.map(function (p) { return P2.PARTS[p]; }).join(', ')}${ex.tags.impact === 'high' ? ', high impact' : ', low impact'}</p>`}
         ${ex.alt && html`<p className="alt">${ex.alt}</p>`}
         <${HowTo} exId=${props.id} rx=${false} />
         <h3 style=${S("font-size:16px;margin-top:16px")}>Coaching cues</h3>
@@ -3031,15 +4383,21 @@ if (typeof module !== 'undefined') module.exports = WorkoutEngine;
 
   function Library(props) {
     var cats = ['Warm-up', 'Upper body', 'Posture', 'Lower body', 'Core', 'Cardio', 'Cooldown'];
+    var _f = useState({ part: null, level: null }), f = _f[0], setF = _f[1];
+    function match(id) { var t = EX[id].tags || {}; return (f.part == null || (t.parts || []).indexOf(f.part) >= 0) && (f.level == null || t.level === f.level); }
     return html`<div>
-      <div className="day-head"><h1>Exercises</h1><p>Tap any move to watch the demonstration and read the full coaching notes.</p></div>
+      <div className="day-head"><h1>Exercises</h1><p>${Object.keys(EX).length} moves. Tap any move to watch the demonstration and read the full coaching notes.</p></div>
+      <div className="form-sec"><h3>Body part</h3><${Chips} label="Body part" any=${true} value=${f.part} onChange=${function (v) { setF({ part: v, level: f.level }); }} options=${entries(P2.PARTS)} /></div>
+      <div className="form-sec"><h3>Level</h3><${Chips} label="Level" any=${true} value=${f.level} onChange=${function (v) { setF({ part: f.part, level: v }); }} options=${entries(P2.LEVELS)} /></div>
       ${cats.map(function (c) {
-        var ids = Object.keys(EX).filter(function (k) { return EX[k].cat === c; });
+        var ids = Object.keys(EX).filter(function (k) { return EX[k].cat === c && match(k); });
+        if (!ids.length) return null;
         return html`<div className="lib-group" key=${c}><h2>${c}</h2>
           ${ids.map(function (id) {
+            var t = EX[id].tags || {};
             return html`<button className="row" key=${id} onClick=${function () { props.onExercise(id); }}>
               <${Thumb} exId=${id} />
-              <span className="t"><b>${EX[id].name}${EX[id].optional ? ' (optional)' : ''}</b><span>${EX[id].equip}</span></span>
+              <span className="t"><b>${EX[id].name}${EX[id].optional ? ' (optional)' : ''}</b><span>${t.level ? levelBadge(t.level) : ''} ${EX[id].equip}${t.impact === 'high' ? ', high impact' : ''}</span></span>
               <span className="chev">${ic.chev()}</span></button>`;
           })}</div>`;
       })}
@@ -3082,6 +4440,21 @@ if (typeof module !== 'undefined') module.exports = WorkoutEngine;
           <div><span>Next up</span><b>Day ${nextDay(st)}</b></div>
         </div>
       </div>
+
+      <section className="section"><${ProfileCard} profile=${st.profile} onChange=${props.onProfile} onQuiz=${props.onQuiz} /></section>
+
+      <section className="section">
+        <div className="section-head"><h2>All workouts</h2><span>${(st.history || []).length} completed</span></div>
+        <div className="card">
+          <div className="mini-stats">
+            <div><span>Total sessions</span><b>${(st.history || []).length}</b></div>
+            <div><span>Total minutes</span><b>${(st.history || []).reduce(function (a, h) { return a + (h.min || 0); }, 0)}</b></div>
+          </div>
+          ${(st.history || []).length ? html`<ul className="hist">${st.history.slice(0, 8).map(function (h, i) {
+            return html`<li key=${i}><b>${h.title}</b><span>${new Date(h.date).toLocaleDateString()}, ${h.min} min${h.reps && h.reps.planned ? ', ' + h.reps.actual + ' of ' + h.reps.planned + ' reps' : ''}</span></li>`; })}</ul>`
+            : html`<p className="hint">Finished workouts from any plan or the Workouts tab appear here.</p>`}
+        </div>
+      </section>
 
       <section className="section">
         <div className="section-head"><h2>Measurements</h2></div>
@@ -3155,7 +4528,9 @@ if (typeof module !== 'undefined') module.exports = WorkoutEngine;
     var st = coach.status();
     var msg = !st.supported ? 'This browser can’t speak. Open the app in Chrome (Android) or Safari (iPhone) rather than an in-app browser. Instructions and timers still show on screen.'
       : st.voices === 0 ? 'Speech is available, but no voice is installed yet. On Android, install or turn on a text-to-speech engine (such as Speech Services by Google) in your phone settings, then reopen the app.'
-      : 'Speech is available, with ' + st.voices + ' voice' + (st.voices === 1 ? '' : 's') + ' on this device. If Test voice is silent, turn up the media volume and check silent mode.';
+      : 'Speech is available, with ' + st.voices + ' voice' + (st.voices === 1 ? '' : 's') + ' on this device' + (st.current ? ', using ' + st.current.name + ' (' + st.current.lang + ')' : '') + '. ' +
+        (st.accent === 'en-IN' && !st.indianVoices ? 'No Indian English voice is installed, so another English voice is used. To add one, install an English (India) voice in your phone\u2019s text-to-speech settings, then reopen the app. ' : '') +
+        'If Test voice is silent, turn up the media volume and check silent mode.';
     return html`<p className=${'voice-check' + (st.supported && st.voices ? ' ok' : '')}>${msg}</p>`;
   }
 
@@ -3167,6 +4542,8 @@ if (typeof module !== 'undefined') module.exports = WorkoutEngine;
         <${VoiceCheck} />
         <div className="opt-row"><span>Voice</span>
           <div className="seg"><button aria-pressed=${props.voice} onClick=${function () { props.setVoice(true); }}>On</button><button aria-pressed=${!props.voice} onClick=${function () { props.setVoice(false); }}>Off</button></div></div>
+        <div className="opt-row"><span>Accent</span>
+          <div className="seg"><button aria-pressed=${(st.accent || 'en-IN') === 'en-IN'} onClick=${function () { coach.setAccent('en-IN'); props.setSettings({ accent: 'en-IN', voiceURI: '' }); }}>Indian English</button><button aria-pressed=${st.accent === 'any'} onClick=${function () { coach.setAccent('any'); props.setSettings({ accent: 'any' }); }}>Any English</button></div></div>
         <div className="opt-row"><span>Speed</span>
           <div className="seg">${[[0.85, 'Slower'], [1, 'Normal'], [1.15, 'Faster']].map(function (r) {
             return html`<button key=${r[0]} aria-pressed=${(st.rate || 1) === r[0]} onClick=${function () { props.setSettings({ rate: r[0] }); }}>${r[1]}</button>`; })}</div></div>
@@ -3185,15 +4562,16 @@ if (typeof module !== 'undefined') module.exports = WorkoutEngine;
   }
 
   function Player(props) {
-    var day = DAYS[props.n - 1];
-    var steps = useMemo(function () { return buildSteps(day); }, [props.n]);
+    var day = props.day || DAYS[props.n - 1];
+    var label = props.label || ('Day ' + props.n), isCore = !props.ctx || props.ctx === 'core';
+    var steps = useMemo(function () { return buildSteps(day); }, [props.n, props.day]);
     var settings = props.state.settings || {};
     var voiceOn = props.state.voice !== false;
     var propsRef = useRef(props); propsRef.current = props;
     var engRef = useRef(null);
     if (!engRef.current) {
       var e0 = new WorkoutEngine.Engine({
-        steps: steps, EX: EX, voice: coach,
+        steps: steps, EX: EX, voice: coach, shortRepeats: !!day.shortRepeatIntros,
         settings: { repMode: settings.repMode || 'guided', tempoScale: settings.tempoScale || 1 },
         onCue: function (c) {
           if (c === 'tick') beep(660, 0.1); else if (c === 'go') beep(990, 0.25);
@@ -3208,10 +4586,11 @@ if (typeof module !== 'undefined') module.exports = WorkoutEngine;
     var _v = useState(function () { return eng.view(); }), v = _v[0], setV = _v[1];
     var _vs = useState(false), sheet = _vs[0], setSheet = _vs[1];
     var _mv = useState(false), showMove = _mv[0], setShowMove = _mv[1];
+    var _rt = useState(null), rating = _rt[0], setRating = _rt[1];
 
     // voice settings -> coach
     useEffect(function () { coach.setEnabled(voiceOn); eng.voiceChanged && eng.voiceChanged(); }, [voiceOn]);
-    useEffect(function () { coach.setRate(settings.rate || 1); coach.setVoice(settings.voiceURI || ''); }, [settings.rate, settings.voiceURI]);
+    useEffect(function () { coach.setRate(settings.rate || 1); coach.setVoice(settings.voiceURI || ''); coach.setAccent(settings.accent || 'en-IN'); }, [settings.rate, settings.voiceURI, settings.accent]);
     useEffect(function () { return function () { coach.cancelAll(); }; }, []);
 
     // the workout clock
@@ -3252,20 +4631,23 @@ if (typeof module !== 'undefined') module.exports = WorkoutEngine;
       var planned = 0, actual = 0;
       Object.keys(v.results).forEach(function (k) { var r = v.results[k]; if (r.kind === 'reps') { planned += r.planned; actual += r.actual; } });
       var skippedWork = v.skipped.length, mins = Math.max(1, Math.round(v.total / 60000));
-      var summary = { reps: { planned: planned, actual: actual }, skipped: skippedWork, results: v.results };
+      var summary = { reps: { planned: planned, actual: actual }, skipped: skippedWork, results: v.results, total: v.totalWork, rating: rating };
       return html`<div className="player"><div className="player-in done-wrap">
         <div style=${S("max-width:220px;margin:0 auto")}><div className="stage"><${Figure} exId="deep_breathing" /></div></div>
-        <h1>Day ${props.n} finished</h1>
+        <h1>${props.ctx === 'quick' ? 'Workout finished' : label + ' finished'}</h1>
         <p style=${S("color:var(--muted);margin-top:6px")}>${day.title}</p>
         <div className="stats">
           <div className="stat"><b>${fmt(v.total / 1000)}</b><span>actual time</span></div>
           <div className="stat"><b>${actual}</b><span>reps confirmed${planned ? ' of ' + planned + ' planned' : ''}</span></div>
           <div className="stat"><b>${skippedWork}</b><span>skipped</span></div>
         </div>
+        <div className="form-sec" style=${S("text-align:left")}><h3>How did that feel?</h3>
+          <${Chips} label="How did that feel" value=${rating} onChange=${setRating} options=${[['easy', 'Too easy'], ['right', 'Just right'], ['hard', 'Too hard']]} />
+          ${!isCore && html`<p className="hint">Your answers help the app adjust your level.</p>`}</div>
         ${skippedWork > 0 && html`<div><p className="hint">You skipped ${skippedWork} of ${v.totalWork}. Finish them now, or save the day as it is.</p>
           <button className="btn btn-primary btn-block" style=${S("margin-top:14px")} onClick=${act(function () { eng.goTo(Math.min.apply(null, v.skipped)); })}>${ic.play()} Do the skipped moves</button></div>`}
-        <button className="btn btn-pine btn-block" style=${S("margin-top:22px")} onClick=${function () { props.onComplete(props.n, mins, false, summary); }}>${ic.check()} Save Day ${props.n} as complete</button>
-        ${(props.n === 1 || props.n === 15) && html`<button className="btn btn-soft btn-block" style=${S("margin-top:10px")} onClick=${function () { props.onComplete(props.n, mins, true, summary); }}>Save and record measurements</button>`}
+        <button className="btn btn-pine btn-block" style=${S("margin-top:22px")} onClick=${function () { props.onComplete(props.n, mins, false, summary); }}>${ic.check()} ${props.ctx === 'quick' ? 'Save to my history' : 'Save ' + label + ' as complete'}</button>
+        ${isCore && (props.n === 1 || props.n === 15) && html`<button className="btn btn-soft btn-block" style=${S("margin-top:10px")} onClick=${function () { props.onComplete(props.n, mins, true, summary); }}>Save and record measurements</button>`}
         <button className="btn btn-soft btn-block" style=${S("margin-top:10px")} onClick=${props.onClose}>Close without saving</button>
       </div></div>`;
     }
@@ -3387,11 +4769,11 @@ if (typeof module !== 'undefined') module.exports = WorkoutEngine;
       ${big && html`<div className="p-big" role="timer">${big}</div>`}
     </div>`;
 
-    return html`<div className="player" role="dialog" aria-label=${'Day ' + props.n + ' workout player'}>
+    return html`<div className="player" role="dialog" aria-label=${label + ' workout player'}>
       <div className="player-in">
         <div className="p-top">
           <button className="icon-btn" aria-label="Close player (progress is saved)" onClick=${props.onClose}>${ic.close()}</button>
-          <div className="ttl"><b>Day ${props.n}: ${day.title}</b><span>${PHASE_LABEL[v.phase]}</span></div>
+          <div className="ttl"><b>${props.ctx === 'quick' ? day.title : label + ': ' + day.title}</b><span>${PHASE_LABEL[v.phase]}</span></div>
           <span className="p-clock" aria-label="Workout time">${fmt(v.total / 1000)}</span>
           <button className="icon-btn" aria-label="Voice settings" onClick=${function () { setSheet(true); }}>${voiceOn ? ic.sound() : ic.mute()}</button>
         </div>
@@ -3440,6 +4822,286 @@ if (typeof module !== 'undefined') module.exports = WorkoutEngine;
     </div>`;
   }
 
+  // ======================= v2.0 screens =======================
+  var P2 = PROGRAMS;
+  var TYPE_OF_DAY = { strength: 'Strength', cardio: 'Cardio', recovery: 'Recovery' };
+  function Chips(props) { // single-select chip row; value null = "Any"
+    return html`<div className="chips" role="group" aria-label=${props.label}>
+      ${props.any && html`<button className="chip-btn" aria-pressed=${props.value == null} onClick=${function () { props.onChange(null); }}>Any</button>`}
+      ${props.options.map(function (o) { return html`<button key=${String(o[0])} className="chip-btn" aria-pressed=${props.value === o[0]} onClick=${function () { props.onChange(o[0]); }}>${o[1]}</button>`; })}
+    </div>`;
+  }
+  function entries(obj) { return Object.keys(obj).map(function (k) { return [isNaN(+k) ? k : +k, obj[k]]; }); }
+  function levelBadge(l) { return html`<span className=${'lvl lvl' + l}>${P2.LEVELS[l]}</span>`; }
+
+  // Generic workout page (custom plan days and Workouts tab)
+  function WorkoutDetail(props) {
+    var day = props.day, bm = blockMinutes(day), meta = day.meta || {};
+    return html`<div>
+      <button className="back" onClick=${props.onBack}>${ic.back()} ${props.backLabel || 'Back'}</button>
+      <div className="day-head">
+        <span className="chip" style=${{ '--type': TYPE_VAR[day.type] || 'var(--strength)' }}><i></i>${props.label ? props.label + ', ' : ''}${P2.TYPES[meta.type] || TYPE_OF_DAY[day.type]}</span>
+        <h1>${day.title}</h1>
+        <p>About ${Math.round(estMinutes(day))} minutes, ${P2.LEVELS[meta.level] ? P2.LEVELS[meta.level].toLowerCase() : ''} level${meta.part && meta.part !== 'full' ? ', focus: ' + P2.PARTS[meta.part].toLowerCase() : ''}.${day.blurb ? ' ' + day.blurb : ''}</p>
+      </div>
+      ${day.blocks.map(function (b, bi) {
+        return html`<div className="block" key=${bi}>
+          <div className="block-h"><h3>${b.name}</h3><span>${Math.round(bm[b.name] || 0)} min</span></div>
+          ${b.items.map(function (it, ii) {
+            return html`<button className="row" key=${ii} onClick=${function () { props.onExercise(it.ex); }}>
+              <${Thumb} exId=${it.ex} />
+              <span className="t"><b>${EX[it.ex].name}${EX[it.ex].optional ? ' (optional)' : ''}</b><span>${itemLine(it)}${it.round ? ', round ' + it.round : ''}</span></span>
+              <span className="chev">${ic.chev()}</span></button>`;
+          })}</div>`;
+      })}
+      <a className="yt-link" href=${'https://www.youtube.com/results?search_query=' + encodeURIComponent('SELF ' + (P2.TYPES[meta.type] || 'home') + ' workout at home ' + (P2.LEVELS[meta.level] || ''))} target="_blank" rel="noopener">Find follow-along videos on YouTube (SELF) ↗</a>
+      ${props.onMark && html`<div className="check-row">
+        <input type="checkbox" id="mark2" checked=${!!props.done} onChange=${function (e) { props.onMark(e.target.checked); }} />
+        <label htmlFor="mark2">Workout completed<small>${props.done ? 'Done ' + new Date(props.done.date).toLocaleDateString() + ', ' + props.done.min + ' min' : 'Ticks automatically when you finish in the player'}</small></label>
+      </div>`}
+      <div style=${S("height:80px")}></div>
+      <div className="sticky-cta"><div className="in">
+        <button className="btn btn-pine btn-block" onClick=${props.onStart}>${ic.play()} ${props.resuming ? 'Resume workout' : props.done ? 'Do it again' : 'Start workout'}</button>
+      </div></div>
+    </div>`;
+  }
+
+  // Plan switcher bar shown at the top of the Plan tab
+  function PlanBar(props) {
+    var st = props.state, p = st.activePlan && st.plans[st.activePlan];
+    return html`<button className="plan-bar" onClick=${props.onPick}>
+      <span><small>Your plan</small><b>${p ? P2.planName(p.params) : '15-Day Home Coach (original)'}</b></span><span className="plan-bar-act">Change ${ic.chev()}</span>
+    </button>`;
+  }
+
+  function PlanPicker(props) {
+    var st = props.state;
+    var plans = Object.keys(st.plans).map(function (k) { return st.plans[k]; }).sort(function (a, b) { return b.created - a.created; });
+    function row(id, name, sub, active) {
+      return html`<div className=${'plan-row' + (active ? ' active' : '')} key=${id}>
+        <button className="plan-row-main" onClick=${function () { props.onSelect(id); }}><b>${name}</b><span>${sub}</span></button>
+        ${id !== 'core15' && html`<button className="icon-btn" aria-label=${'Delete ' + name} onClick=${function () { if (confirm('Delete "' + name + '" and its progress? This cannot be undone.')) props.onDelete(id); }}>${ic.close()}</button>`}
+      </div>`;
+    }
+    return html`<div>
+      <button className="back" onClick=${props.onBack}>${ic.back()} Back</button>
+      <div className="day-head"><h1>Your plans</h1><p>Switch plans any time. Each plan keeps its own progress.</p></div>
+      ${row('core15', '15-Day Home Coach (original)', Object.keys(st.done).length + ' of 15 days done', !st.activePlan || st.activePlan === 'core15')}
+      ${plans.map(function (p) { return row(p.params.id, P2.planName(p.params), Object.keys(p.done || {}).length + ' of ' + p.params.days + ' days done, ' + p.params.minutes + ' min a day', st.activePlan === p.params.id); })}
+      <button className="btn btn-primary btn-block" style=${S("margin-top:18px")} onClick=${props.onNew}>+ Create a new plan</button>
+    </div>`;
+  }
+
+  function PlanBuilder(props) {
+    var prof = props.profile || defaultProfile();
+    var _f = useState({ days: 30, goal: 'weight_loss', level: prof.level, minutes: null, parts: [], types: P2.GOAL_TYPES.weight_loss.slice(), weekdays: [1, 2, 3, 4, 5, 6, 0], equip: prof.equip.slice() }), f = _f[0], setF = _f[1];
+    var _tt = useState(false), typesTouched = _tt[0], setTypesTouched = _tt[1];
+    var _er = useState(''), err = _er[0], setErr = _er[1];
+    function up(k) { return function (v) { var o = Object.assign({}, f); o[k] = v; if (k === 'goal' && !typesTouched) o.types = P2.GOAL_TYPES[v].slice(); setF(o); setErr(''); }; }
+    var params = Object.assign({ id: 'preview', start: null, lowImpact: prof.lowImpact }, f);
+    var preview = useMemo(function () { return P2.planDays(params).slice(0, 7); }, [JSON.stringify(f), prof.lowImpact]);
+    var autoMin = P2.defaultMinutes(f.level, f.goal);
+    var trainPerWeek = f.weekdays.length;
+    function create() {
+      if (!f.types.length) { setErr('Choose at least one workout type.'); return; }
+      if (!f.weekdays.length) { setErr('Choose at least one training day.'); return; }
+      props.onCreate(P2.newPlanParams(Object.assign({}, f, { lowImpact: prof.lowImpact })));
+    }
+    return html`<div>
+      <button className="back" onClick=${props.onBack}>${ic.back()} Back</button>
+      <div className="day-head"><h1>Create a plan</h1><p>Choose what suits you. Anything you leave as it is uses a sensible default.</p></div>
+      <div className="form-sec"><h3>Plan length</h3><${Chips} label="Plan length" value=${f.days} onChange=${up('days')} options=${P2.PLAN_LENGTHS.map(function (d) { return [d, d + ' days']; })} /></div>
+      <div className="form-sec"><h3>Goal</h3><${Chips} label="Goal" value=${f.goal} onChange=${up('goal')} options=${entries(P2.GOALS)} /></div>
+      <div className="form-sec"><h3>Body parts to focus on <small>(optional, choose any)</small></h3>
+        <${MultiChips} label="Body parts" value=${f.parts} onChange=${up('parts')} options=${entries(P2.PARTS).filter(function (o) { return o[0] !== 'full'; })} />
+        ${f.parts.length > 0 && f.goal === 'weight_loss' && html`<p className="alt">Fat loss happens across the whole body, so no workout can burn fat from one area. Your plan keeps full-body and cardio days for fat loss and adds extra toning work for the areas you chose.</p>`}</div>
+      <div className="form-sec"><h3>Workout types <small>(choose any)</small></h3>
+        <${MultiChips} label="Workout types" value=${f.types} onChange=${function (v) { setTypesTouched(true); up('types')(v); }} options=${entries(P2.TYPES)} />
+        <p className="hint">Pre-selected for your goal. A recovery or rest day is kept every week.</p></div>
+      <div className="form-sec"><h3>Days I train <small>(choose any)</small></h3>
+        <${MultiChips} label="Training days" value=${f.weekdays} onChange=${up('weekdays')} options=${P2.WEEKDAYS} />
+        <p className="hint">${trainPerWeek} training day${trainPerWeek === 1 ? '' : 's'} a week; the other days are rest days.</p></div>
+      <div className="form-sec"><h3>Level</h3><${Chips} label="Level" value=${f.level} onChange=${up('level')} options=${entries(P2.LEVELS).map(function (o) { return [o[0], o[1] + (o[0] === prof.level ? ' (yours)' : '')]; })} />
+        ${prof.lowImpact && html`<p className="hint">Low-impact moves only, from your profile.</p>`}</div>
+      <div className="form-sec"><h3>Minutes per workout</h3><${Chips} label="Minutes per workout" value=${f.minutes} onChange=${up('minutes')} options=${[[null, 'Auto (' + autoMin + ' min)'], [20, '20 min'], [30, '30 min'], [45, '45 min'], [60, '60 min']]} />
+        <p className="hint">Auto picks a length for your level and goal.</p></div>
+      <div className="form-sec"><h3>Equipment I have <small>(choose any)</small></h3><${MultiChips} label="Equipment" value=${f.equip} onChange=${up('equip')} options=${entries(P2.EQUIPMENT)} /></div>
+      ${f.days === 7 && f.goal === 'weight_loss' && html`<p className="alt">In 7 days you can expect more energy, better stamina and a routine. Visible fat loss usually takes several weeks of training plus a gentle calorie deficit.</p>`}
+      <div className="card" style=${S("margin-top:16px")}>
+        <b>Week 1 preview</b>
+        <ol className="week-prev">${preview.map(function (d) { return html`<li key=${d.n}>${d.rest ? html`<span>Rest day</span>` : html`<span className="wp-t">${d.title} <span>${Math.round(estMinutes(d))} min</span></span>`}</li>`; })}</ol>
+      </div>
+      ${err && html`<p className="form-err" role="alert">${err}</p>`}
+      <button className="btn btn-pine btn-block" style=${S("margin-top:16px")} onClick=${create}>Create ${f.days}-day plan</button>
+    </div>`;
+  }
+
+  var WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  function PlanHome(props) {
+    var plan = props.plan, p = plan.params, days = P2.planDays(p), done = plan.done || {};
+    var train = P2.trainingDays(days);
+    if (!train.length) return html`<div className="card"><b>This plan has no workout days.</b><p className="hint">Choose Change and create a new plan with at least one training day.</p></div>`;
+    var next = train.find(function (d) { return !done[d.n]; }) || train[train.length - 1];
+    var allDone = train.every(function (d) { return done[d.n]; });
+    var nd = next.n, day = next;
+    var resuming = plan.session && plan.session.day === nd;
+    var doneCount = train.filter(function (d) { return done[d.n]; }).length;
+    return html`<div>
+      <div className="hero">
+        <div className="hero-row">
+          <div className="hero-day">${nd}<small>/ ${p.days}</small></div>
+          <div className="hero-peek" aria-hidden="true"><${Figure} exId=${day.blocks[1] && day.blocks[1].items[0] ? day.blocks[1].items[0].ex : 'march'} vb="35 20 190 150" /></div>
+        </div>
+        <h1 className="hero-title">${allDone ? 'Plan complete. Well done.' : day.title}</h1>
+        <p className="hero-meta">${day.date ? P2.parseDate(day.date).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'short' }) + ', ' : ''}about ${Math.round(estMinutes(day))} minutes</p>
+        <div className="hero-actions">
+          <button className="btn btn-primary" onClick=${function () { props.onStart(nd); }}>${ic.play()} ${resuming ? 'Resume Day ' + nd : 'Start Day ' + nd}</button>
+          <button className="btn btn-ghost" onClick=${function () { props.onOpenDay(nd); }}>See workout</button>
+        </div>
+      </div>
+      <section className="section">
+        <div className="section-head"><h2>Your ${p.days} days</h2><span>${doneCount} of ${train.length} workouts done</span></div>
+        <div className="cal">
+          ${days.map(function (d) {
+            var isDone = !!done[d.n], cur = d.n === nd && !allDone;
+            return html`<button key=${d.n} className=${'cal-tile' + (isDone ? ' done' : '') + (cur ? ' cur' : '') + (d.rest ? ' rest' : '')} style=${{ '--type': d.rest ? 'var(--line)' : TYPE_VAR[d.type] }}
+              onClick=${function () { props.onOpenDay(d.n); }} aria-label=${'Day ' + d.n + ', ' + d.title + (isDone ? ', completed' : '')}>
+              <span className="n">${d.n}</span><span className="k">${d.date ? WD[P2.parseDate(d.date).getDay()] + ' ' : ''}${d.rest ? 'Rest' : TYPE_LABEL[d.type]}</span>
+              ${isDone && html`<span className="chk">${ic.check()}</span>`}
+            </button>`;
+          })}
+        </div>
+        <div className="legend"><span><i style=${S("background:var(--strength)")}></i>Strength</span><span><i style=${S("background:var(--cardio)")}></i>Cardio</span><span><i style=${S("background:var(--recovery)")}></i>Recovery</span><span><i style=${S("background:var(--line)")}></i>Rest</span></div>
+      </section>
+    </div>`;
+  }
+
+  function Workouts(props) {
+    var prof = props.profile || defaultProfile();
+    var _f = useState({ type: null, level: null, minutes: null, parts: [], equip: prof.equip.slice() }), f = _f[0], setF = _f[1];
+    function up(k) { return function (v) { var o = Object.assign({}, f); o[k] = v; if (k === 'type' && v !== 'strength' && v !== 'pilates') o.parts = []; setF(o); }; }
+    var lvl = f.level || prof.level;
+    var list = P2.CATALOG.filter(function (c) {
+      return (f.type == null || c.type === f.type) && (f.level == null || c.level === f.level) && (f.minutes == null || c.minutes === f.minutes) &&
+        (!f.parts.length || f.parts.indexOf(c.part) >= 0) && (!prof.lowImpact || c.level < 3);
+    });
+    var goal = f.type === 'mobility' ? 'flexibility' : f.type === 'hiit' || f.type === 'cardio' ? 'weight_loss' : 'tone';
+    var mins = f.minutes || P2.defaultMinutes(lvl, goal);
+    var partTxt = f.parts.map(function (x) { return P2.PARTS[x].toLowerCase(); }).join(', ');
+    return html`<div>
+      <${LevelNotice} profile=${props.profile} onOk=${props.onNoticeOk} onUndo=${props.onNoticeUndo} />
+      <div className="day-head"><h1>Workouts</h1><p>Your level: ${levelBadge(prof.level)} Filter the ready-made sessions or build your own.</p></div>
+      <div className="form-sec"><h3>Type</h3><${Chips} label="Workout type" any=${true} value=${f.type} onChange=${up('type')} options=${entries(P2.TYPES)} /></div>
+      ${(f.type === 'strength' || f.type === 'pilates') && html`<div className="form-sec"><h3>Body parts <small>(choose any)</small></h3><${MultiChips} label="Body parts" value=${f.parts} onChange=${up('parts')} options=${entries(P2.PARTS).filter(function (o) { return o[0] !== 'full'; })} /></div>`}
+      <div className="form-sec"><h3>Level</h3><${Chips} label="Level" any=${true} value=${f.level} onChange=${up('level')} options=${entries(P2.LEVELS).map(function (o) { return [o[0], o[1] + (o[0] === prof.level ? ' (yours)' : '')]; })} /></div>
+      <div className="form-sec"><h3>Duration</h3><${Chips} label="Duration" any=${true} value=${f.minutes} onChange=${up('minutes')} options=${P2.DURATIONS.map(function (m) { return [m, m + ' min']; })} /></div>
+      <div className="form-sec"><h3>Equipment I have <small>(choose any)</small></h3><${MultiChips} label="Equipment" value=${f.equip} onChange=${up('equip')} options=${entries(P2.EQUIPMENT)} /></div>
+      <div className="wk-list">
+        ${f.type != null && html`<button className="wk-card custom" onClick=${function () { props.onOpen(P2.buildWorkout({ type: f.type, parts: f.parts, level: lvl, minutes: f.minutes, goal: goal, equip: f.equip, lowImpact: prof.lowImpact, seed: 'custom' })); }}>
+          <b>Build my ${mins}-minute ${(partTxt ? partTxt + ' ' : '') + P2.TYPES[f.type].replace(/^./, function (c) { return c.toLowerCase(); })} workout</b>
+          <span>${P2.LEVELS[lvl]} level${f.level ? '' : ' (yours)'}${f.minutes ? '' : ', length chosen for your level'}</span></button>`}
+        ${list.map(function (c) {
+          return html`<button key=${c.id} className="wk-card" onClick=${function () { props.onOpen(P2.catalogWorkout(c.id, { equip: f.equip, lowImpact: prof.lowImpact })); }}>
+            <span className="wk-top">${levelBadge(c.level)}<span className="wk-min">${c.minutes} min</span></span>
+            <b>${c.name}</b><span>${P2.TYPES[c.type]}${c.type === 'strength' || c.type === 'pilates' ? (c.part !== 'full' ? ', ' + P2.PARTS[c.part].toLowerCase() : '') : ''}. ${c.blurb}</span></button>`;
+        })}
+        ${!list.length && f.type == null && html`<p className="hint">No ready-made workout matches. Choose a type to build one.</p>`}
+      </div>
+    </div>`;
+  }
+
+  // ======================= v2.1: profile, quiz, multi-select =======================
+  function MultiChips(props) { // multi-select chip row; value is an array
+    var val = props.value || [];
+    return html`<div className="chips" role="group" aria-label=${props.label}>
+      ${props.options.map(function (o) {
+        var on = val.indexOf(o[0]) >= 0;
+        return html`<button key=${String(o[0])} className="chip-btn" aria-pressed=${on} onClick=${function () {
+          var next = on ? val.filter(function (x) { return x !== o[0]; }) : val.concat([o[0]]);
+          if (props.min && next.length < props.min) return;
+          props.onChange(next);
+        }}>${on ? '✓ ' : ''}${o[1]}</button>`;
+      })}
+    </div>`;
+  }
+  function defaultProfile() { return { level: 1, source: 'default', equip: P2.ALL_EQUIP.slice(), lowImpact: false, quiz: null, log: [], notice: null }; }
+
+  function LevelQuiz(props) {
+    var _a = useState({}), ans = _a[0], setAns = _a[1];
+    var _e = useState(props.equip || P2.ALL_EQUIP.slice()), eq = _e[0], setEq = _e[1];
+    var _r = useState(null), res = _r[0], setRes = _r[1];
+    var _err = useState(''), err = _err[0], setErr = _err[1];
+    var _o = useState(null), override = _o[0], setOverride = _o[1];
+    function pick(id, v) { var o = Object.assign({}, ans); o[id] = v; setAns(o); setErr(''); }
+    function score() {
+      var missing = P2.QUIZ.filter(function (q) { return ans[q.id] == null; });
+      if (missing.length) { setErr('Answer all ' + P2.QUIZ.length + ' questions to see your level (' + missing.length + ' left).'); return; }
+      setRes(P2.assessLevel(ans));
+    }
+    function save() {
+      var lvl = override || res.level;
+      props.onDone({ level: lvl, source: override && override !== res.level ? 'manual' : 'quiz', equip: eq, lowImpact: res.lowImpact,
+        quiz: { answers: ans, score: res.score, suggested: res.level, date: new Date().toISOString() }, log: [], notice: null });
+    }
+    return html`<div className="quiz">
+      <div className="day-head"><h1>Find your level</h1><p>Six quick questions set your starting level. Afterwards the app adjusts it from how your workouts go.</p></div>
+      ${P2.QUIZ.map(function (q, i) {
+        return html`<div className="form-sec" key=${q.id}><h3>${i + 1}. ${q.q}</h3>
+          <${Chips} label=${q.q} value=${ans[q.id]} onChange=${function (v) { pick(q.id, v); }} options=${q.a.map(function (a) { return [a[1], a[0]]; })} /></div>`;
+      })}
+      <div className="form-sec"><h3>Equipment you have (choose all that apply)</h3>
+        <${MultiChips} label="Equipment" value=${eq} onChange=${setEq} options=${entries(P2.EQUIPMENT)} />
+        <p className="hint">Bodyweight moves are always included.</p></div>
+      ${!res && html`<div>
+        ${err && html`<p className="form-err" role="alert">${err}</p>`}
+        <button className="btn btn-pine btn-block" style=${S("margin-top:16px")} onClick=${score}>See my level</button>
+        <button className="btn btn-soft btn-block" style=${S("margin-top:10px")} onClick=${function () { var p = defaultProfile(); p.equip = eq; props.onDone(p); }}>Skip for now (start as beginner)</button>
+      </div>`}
+      ${res && html`<div className="card result-card" role="status">
+        <p className="hint" style=${S("margin:0")}>Suggested level</p>
+        <h2>${P2.LEVELS[res.level]}</h2>
+        <p>${res.why}</p>
+        ${res.lowImpact && html`<p className="alt">Because of joint pain or injury, workouts will use low-impact moves only (no jumping). Check with your doctor before starting.</p>`}
+        <div className="form-sec"><h3>Use a different level?</h3><${Chips} label="Level" value=${override || res.level} onChange=${setOverride} options=${entries(P2.LEVELS)} /></div>
+        <button className="btn btn-pine btn-block" style=${S("margin-top:14px")} onClick=${save}>Save and continue</button>
+      </div>`}
+    </div>`;
+  }
+
+  function LevelNotice(props) {
+    var n = props.profile && props.profile.notice;
+    if (!n) return null;
+    return html`<div className="level-notice" role="status">
+      <b>Level ${n.to > n.from ? 'up' : 'adjusted'}: ${P2.LEVELS[n.to]}</b><span>${n.reason}</span>
+      <div className="sub-acts"><button className="btn btn-soft" onClick=${props.onUndo}>Keep ${P2.LEVELS[n.from]}</button><button className="btn btn-pine" onClick=${props.onOk}>OK</button></div>
+    </div>`;
+  }
+
+  function ProfileCard(props) {
+    var p = props.profile;
+    if (!p) return html`<div className="card"><b>Your fitness level</b><p className="hint">Not set yet.</p><button className="btn btn-pine" style=${S("margin-top:8px")} onClick=${props.onQuiz}>Take the 1-minute quiz</button></div>`;
+    var src = { quiz: 'from your quiz', auto: 'adjusted from your workouts', manual: 'chosen by you', 'default': 'default (quiz skipped)' }[p.source] || '';
+    return html`<div className="card">
+      <b>Your fitness level</b>
+      <p style=${S("margin-top:6px")}>${levelBadge(p.level)} ${P2.LEVELS[p.level]} <span className="hint">(${src})</span></p>
+      ${p.lowImpact && html`<p className="hint">Low-impact moves only.</p>`}
+      <div className="form-sec"><h3>Change level</h3><${Chips} label="Level" value=${p.level} onChange=${function (v) { props.onChange({ level: v, source: 'manual' }); }} options=${entries(P2.LEVELS)} /></div>
+      <div className="form-sec"><h3>Equipment you have</h3><${MultiChips} label="Equipment" value=${p.equip} onChange=${function (v) { props.onChange({ equip: v }); }} options=${entries(P2.EQUIPMENT)} /></div>
+      <label className="check-row" style=${S("margin-top:12px")}><input type="checkbox" checked=${!!p.lowImpact} onChange=${function (e) { props.onChange({ lowImpact: e.target.checked }); }} /><span>Low impact only (no jumping)</span></label>
+      ${(p.log || []).length > 0 && html`<p className="hint">Level changes: ${p.log.slice(-3).map(function (l) { return P2.LEVELS[l.from] + ' → ' + P2.LEVELS[l.to] + ' (' + new Date(l.date).toLocaleDateString() + ')'; }).join('; ')}</p>`}
+      <button className="btn btn-soft" style=${S("margin-top:10px")} onClick=${props.onQuiz}>Retake the quiz</button>
+    </div>`;
+  }
+
+  function RestDayView(props) {
+    return html`<div>
+      <button className="back" onClick=${props.onBack}>${ic.back()} All days</button>
+      <div className="day-head"><span className="chip"><i></i>Day ${props.day.n}${props.day.date ? ', ' + P2.parseDate(props.day.date).toLocaleDateString(undefined, { weekday: 'long' }) : ''}</span>
+        <h1>Rest day</h1><p>Recovery is part of the plan: muscles adapt on rest days. A walk or gentle stretching is fine if you feel like moving.</p></div>
+      <button className="btn btn-soft btn-block" onClick=${props.onStretch}>${ic.play()} Optional: 10-minute mobility</button>
+    </div>`;
+  }
+
   // ---------- App ----------
   function App() {
     var _s = useState(function () { return loadLocal() || freshState(); }), state = _s[0], setState = _s[1];
@@ -3460,7 +5122,39 @@ if (typeof module !== 'undefined') module.exports = WorkoutEngine;
     useEffect(function () { window.scrollTo(0, 0); }, [view.tab, view.day, view.ex]);
     useEffect(function () { document.body.style.overflow = playing ? 'hidden' : ''; }, [playing]);
 
-    function start(n) { setPlaying(n); }
+    function start(n) { setPlaying({ ctx: 'core', n: n }); }
+    // v2 contexts: custom plans and single workouts keep separate progress and sessions
+    var activePlan = state.activePlan && state.activePlan !== 'core15' ? state.plans[state.activePlan] : null;
+    function startPlanDay(n) { var p = activePlan; if (!p) return; setPlaying({ ctx: 'plan', planId: p.params.id, n: n, day: P2.planDays(p.params)[n - 1], label: 'Day ' + n }); }
+    function startQuick(w) { setPlaying({ ctx: 'quick', n: 0, day: w, wid: (w.catalogId || 'custom') + '|' + w.title }); }
+    function updPlan(id, fn) { set(function (s) { var plans = Object.assign({}, s.plans); var p = JSON.parse(JSON.stringify(plans[id])); fn(p); plans[id] = p; return { plans: plans }; }); }
+    function addHistory(entry) { set(function (s) { return { history: [entry].concat(s.history || []).slice(0, 200) }; }); }
+    // v2.1: record a plan/single workout and auto-adjust the level from recent results.
+    function recordAdaptive(title, min, summary, level) {
+      var planned = summary && summary.reps ? summary.reps.planned : 0, actual = summary && summary.reps ? summary.reps.actual : 0;
+      var total = (summary && summary.total) || 1, skipped = (summary && summary.skipped) || 0;
+      var entry = { date: new Date().toISOString(), title: title, min: min, reps: summary && summary.reps, level: level, rating: summary && summary.rating,
+        completion: planned ? Math.min(1, actual / planned) * (1 - skipped / total) : 1 - skipped / total, skipped: skipped, adaptive: true };
+      set(function (s) {
+        var hist = [entry].concat(s.history || []).slice(0, 200), out = { history: hist };
+        var prof = Object.assign({}, s.profile || defaultProfile());
+        if (level !== prof.level) return out; // only workouts at the current level count
+        var recent = hist.filter(function (h) { return !prof.since || Date.parse(h.date) > Date.parse(prof.since); });
+        var sug = P2.suggestLevel(recent, prof.level);
+        if (sug) {
+          var now = new Date().toISOString();
+          prof.log = (prof.log || []).concat([{ date: now, from: prof.level, to: sug.to, reason: sug.reason }]);
+          prof.notice = { from: prof.level, to: sug.to, reason: sug.reason };
+          prof.level = sug.to; prof.source = 'auto'; prof.since = now;
+        }
+        out.profile = prof; return out;
+      });
+    }
+    function setProfile(patch) { set(function (s) { var p = Object.assign({}, s.profile || defaultProfile(), patch); if (patch.level != null) p.since = new Date().toISOString(); return { profile: p }; }); }
+    var noticeOk = function () { setProfile({ notice: null }); };
+    var noticeUndo = function () { var n = state.profile.notice; setProfile({ level: n.from, source: 'manual', notice: null }); };
+    var needQuiz = !state.profile;
+    var quizView = function (after) { return html`<${LevelQuiz} equip=${state.profile ? state.profile.equip : null} onDone=${function (p) { p.since = new Date().toISOString(); set({ profile: p }); setView(after); }} />`; };
     function openDay(n) { setView({ tab: 'plan', day: n, ex: null }); }
     function openEx(id) { setView(Object.assign({}, view, { ex: id })); }
     function markDay(n, val, min, summary) {
@@ -3476,16 +5170,62 @@ if (typeof module !== 'undefined') module.exports = WorkoutEngine;
     }
 
     var content;
+    var goPlan = function () { setView({ tab: 'plan', day: null, ex: null }); };
     if (view.ex) content = html`<${ExerciseView} id=${view.ex} onBack=${function () { setView(Object.assign({}, view, { ex: null })); }} />`;
-    else if (view.tab === 'plan' && view.day) content = html`<${DayView} n=${view.day} state=${state} onBack=${function () { setView({ tab: 'plan', day: null, ex: null }); }}
+    else if (view.tab === 'plan' && view.pick) content = html`<${PlanPicker} state=${state} onBack=${goPlan}
+        onSelect=${function (id) { set({ activePlan: id }); goPlan(); }} onNew=${function () { setView({ tab: 'plan', create: true }); }}
+        onDelete=${function (id) { set(function (s) { var p = Object.assign({}, s.plans); delete p[id]; return { plans: p, activePlan: s.activePlan === id ? 'core15' : s.activePlan }; }); }} />`;
+    else if (view.tab === 'plan' && view.create && needQuiz) content = quizView({ tab: 'plan', create: true });
+    else if (view.tab === 'plan' && view.create) content = html`<${PlanBuilder} profile=${state.profile} onBack=${function () { setView({ tab: 'plan', pick: true }); }}
+        onCreate=${function (params) { set(function (s) { var p = Object.assign({}, s.plans); p[params.id] = { params: params, created: Date.now(), done: {}, session: null }; return { plans: p, activePlan: params.id }; }); goPlan(); }} />`;
+    else if (view.tab === 'plan' && view.planDay && activePlan && P2.planDays(activePlan.params)[view.planDay - 1].rest) content = html`<${RestDayView} day=${P2.planDays(activePlan.params)[view.planDay - 1]} onBack=${goPlan}
+        onStretch=${function () { startQuick(P2.buildWorkout({ type: 'mobility', level: 1, minutes: 10, goal: 'flexibility', seed: 'restday', title: 'Rest-day mobility' })); }} />`;
+    else if (view.tab === 'plan' && view.planDay && activePlan) {
+      var pd = P2.planDays(activePlan.params)[view.planDay - 1], pdone = (activePlan.done || {})[view.planDay];
+      content = html`<${WorkoutDetail} day=${pd} label=${'Day ' + view.planDay} backLabel="All days" done=${pdone}
+        resuming=${activePlan.session && activePlan.session.day === view.planDay} onBack=${goPlan} onExercise=${openEx}
+        onStart=${function () { startPlanDay(view.planDay); }}
+        onMark=${function (v) { var n = view.planDay; updPlan(activePlan.params.id, function (p) { if (v) p.done[n] = { date: new Date().toISOString(), min: Math.round(estMinutes(pd)), manual: true }; else delete p.done[n]; }); }} />`;
+    }
+    else if (view.tab === 'plan' && view.day) content = html`<${DayView} n=${view.day} state=${state} onBack=${goPlan}
         onStart=${start} onExercise=${openEx} onMark=${markDay} onProgress=${function () { setView({ tab: 'progress', day: null, ex: null }); }} />`;
-    else if (view.tab === 'plan') content = html`<${Home} state=${state} onStart=${start} onOpenDay=${openDay} onSafety=${function () { setSafety(true); }} />`;
+    else if (view.tab === 'plan') content = html`<div>
+        <${LevelNotice} profile=${state.profile} onOk=${noticeOk} onUndo=${noticeUndo} />
+        <${PlanBar} state=${state} onPick=${function () { setView({ tab: 'plan', pick: true }); }} />
+        ${activePlan ? html`<${PlanHome} plan=${activePlan} onStart=${startPlanDay} onOpenDay=${function (n) { setView({ tab: 'plan', planDay: n }); }} />`
+          : html`<${Home} state=${state} onStart=${start} onOpenDay=${openDay} onSafety=${function () { setSafety(true); }} />`}
+      </div>`;
+    else if (view.tab === 'workouts' && view.workout) content = html`<${WorkoutDetail} day=${view.workout} onBack=${function () { setView({ tab: 'workouts' }); }} onExercise=${openEx}
+        resuming=${state.quick && state.quick.wid === (view.workout.catalogId || 'custom') + '|' + view.workout.title} onStart=${function () { startQuick(view.workout); }} />`;
+    else if (view.tab === 'workouts' && needQuiz) content = quizView({ tab: 'workouts' });
+    else if (view.tab === 'workouts') content = html`<${Workouts} profile=${state.profile} onNoticeOk=${noticeOk} onNoticeUndo=${noticeUndo} onOpen=${function (w) { setView({ tab: 'workouts', workout: w }); }} />`;
     else if (view.tab === 'library') content = html`<${Library} onExercise=${openEx} />`;
-    else content = html`<${Progress} state=${state} set=${set} onImport=${function (data) { saveLocal(data); setState(data); }} onReset=${function () { var f = freshState(); f.safetyOk = true; set(f); }} />`;
+    else if (view.tab === 'progress' && view.quiz) content = quizView({ tab: 'progress' });
+    else content = html`<${Progress} state=${state} set=${set} onProfile=${setProfile} onQuiz=${function () { setView({ tab: 'progress', quiz: true }); }} onImport=${function (data) { saveLocal(data); setState(data); }} onReset=${function () { var f = freshState(); f.safetyOk = true; set(f); }} />`;
 
     function tab(id, label, icon) {
-      var cur = view.tab === id && !view.ex && !(id === 'plan' && view.day);
+      var cur = view.tab === id && !view.ex && !view.day && !view.planDay && !view.pick && !view.create && !view.workout && !view.quiz;
       return html`<button className="tab" aria-current=${cur ? 'page' : undefined} onClick=${function () { setView({ tab: id, day: null, ex: null }); }}>${icon}<span>${label}</span></button>`;
+    }
+
+    // resume data and save handlers for the current player context
+    var pl = playing, resumeData = null, saveSess = null, complete = null;
+    if (pl && pl.ctx === 'core') {
+      resumeData = state.session && state.session.day === pl.n ? state.session : null;
+      saveSess = function (ss) { set({ session: ss }); };
+      complete = function (n, min, toProgress, summary) { markDay(n, true, min, summary); set({ session: null }); addHistory({ date: new Date().toISOString(), title: '15-day plan, Day ' + n + ': ' + DAYS[n - 1].title, min: min, reps: summary && summary.reps, rating: summary && summary.rating }); setPlaying(null); setView(toProgress ? { tab: 'progress', day: null, ex: null } : { tab: 'plan', day: null, ex: null }); };
+    } else if (pl && pl.ctx === 'plan') {
+      var pp = state.plans[pl.planId];
+      resumeData = pp && pp.session && pp.session.day === pl.n ? pp.session : null;
+      saveSess = function (ss) { updPlan(pl.planId, function (p) { p.session = ss; }); };
+      complete = function (n, min, toProgress, summary) {
+        updPlan(pl.planId, function (p) { p.done[n] = { date: new Date().toISOString(), min: min, reps: summary && summary.reps, skipped: summary && summary.skipped }; p.session = null; });
+        recordAdaptive(P2.planName(pp.params) + ', Day ' + n, min, summary, pp.params.level); setPlaying(null); goPlan();
+      };
+    } else if (pl && pl.ctx === 'quick') {
+      resumeData = state.quick && state.quick.wid === pl.wid ? state.quick.session : null;
+      saveSess = function (ss) { set({ quick: { wid: pl.wid, session: ss } }); };
+      complete = function (n, min, toProgress, summary) { set({ quick: null }); recordAdaptive(pl.day.title, min, summary, (pl.day.meta && pl.day.meta.level) || 1); setPlaying(null); setView({ tab: 'progress' }); };
     }
 
     return html`<div>
@@ -3496,19 +5236,19 @@ if (typeof module !== 'undefined') module.exports = WorkoutEngine;
         </header>
         <main>${content}</main>
       </div>
-      <nav className="tabs" aria-label="Main"><div className="tabs-in">
-        ${tab('plan', 'Plan', ic.cal())}${tab('library', 'Exercises', ic.list())}${tab('progress', 'Progress', ic.chart())}
+      <nav className="tabs" aria-label="Main"><div className="tabs-in four">
+        ${tab('plan', 'Plan', ic.cal())}${tab('workouts', 'Workouts', ic.bolt2())}${tab('library', 'Exercises', ic.list())}${tab('progress', 'Progress', ic.chart())}
       </div></nav>
-      ${playing && html`<${Player} n=${playing} key=${playing} state=${state}
-          resume=${state.session && state.session.day === playing ? state.session : null}
-          saveSession=${function (ss) { set({ session: ss }); }}
+      ${pl && html`<${Player} n=${pl.n} key=${pl.ctx + '|' + (pl.planId || '') + '|' + pl.n + '|' + (pl.wid || '')} ctx=${pl.ctx} day=${pl.day} label=${pl.label} state=${state}
+          resume=${resumeData}
+          saveSession=${saveSess}
           setVoice=${function (v) { set({ voice: v }); }}
           setSettings=${function (p) { set(function (s) { return { settings: Object.assign({}, s.settings || {}, p) }; }); }}
           setGhosts=${function (v) { set({ ghosts: v }); }}
-          saveTest=${function (n, k, v) { set(function (s) { var t = JSON.parse(JSON.stringify(s.tests)); t[n === 1 ? 'start' : 'end'][k] = v; return { tests: t }; }); }}
+          saveTest=${function (n, k, v) { if (pl.ctx !== 'core') return; set(function (s) { var t = JSON.parse(JSON.stringify(s.tests)); t[n === 1 ? 'start' : 'end'][k] = v; return { tests: t }; }); }}
           onSafety=${function () { setSafety(true); }}
           onClose=${function () { setPlaying(null); coach.cancelAll(); }}
-          onComplete=${function (n, min, toProgress, summary) { markDay(n, true, min, summary); set({ session: null }); setPlaying(null); setView(toProgress ? { tab: 'progress', day: null, ex: null } : { tab: 'plan', day: null, ex: null }); }} />`}
+          onComplete=${complete} />`}
       ${safety && html`<${SafetyModal} first=${!state.safetyOk} onClose=${function () { setSafety(false); if (!state.safetyOk) set({ safetyOk: true }); }} />`}
     </div>`;
   }

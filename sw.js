@@ -1,5 +1,5 @@
 // Offline support. Bump VERSION whenever you publish a new build so phones pick up the update.
-var VERSION = 'home-coach-v1.2.0';
+var VERSION = 'home-coach-v2.1.0';
 var FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-512-maskable.png'];
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(VERSION).then(function (c) { return c.addAll(FILES); }).then(function () { return self.skipWaiting(); }));
